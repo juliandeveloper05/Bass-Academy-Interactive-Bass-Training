@@ -8,7 +8,7 @@
 
 **Interactive Bass Training Platform**
 
-[Demo](#-demo) • [Features](#-features) • [Installation](#-installation) • [Roadmap](#-roadmap)
+[Demo](#-demo) • [Features](#-features) • [Architecture](#-architecture) • [Installation](#-installation)
 
 </div>
 
@@ -34,6 +34,57 @@ Practice arpeggios, scales, and patterns with real-time tablature, fretboard vis
 | 🔄 **Loop Mode** | Continuous practice without interruption |
 | 🌓 **Dark/Light Theme** | Toggle between themes with persistence |
 | 📱 **Responsive Design** | Optimized for desktop and mobile |
+
+## 🏗️ Architecture
+
+This project follows modern React architecture patterns for maintainability and scalability.
+
+### Project Structure
+
+```
+src/
+├── components/
+│   ├── layout/           # Header, CountdownOverlay, Footer
+│   ├── player/           # ControlPanel, BeatIndicator, PlaybackControls, TempoControl
+│   ├── tablature/        # TabNote, TabString, MeasureGuide, Desktop/Mobile views
+│   └── exercise/         # ExerciseSelector, EducationalInfoPanel
+├── hooks/
+│   ├── useBassAudio.js       # Audio engine wrapper
+│   ├── useAudioScheduler.js  # Note scheduling with lookahead
+│   └── usePlayerState.js     # State management with FSM
+├── services/
+│   └── AudioService.js       # Pure JS audio synthesis (testable)
+├── machines/
+│   └── playerStateMachine.js # Finite State Machine for player
+├── reducers/
+│   └── playerReducer.js      # Centralized state with FSM integration
+├── contexts/
+│   └── AudioEngineContext.jsx
+├── config/
+│   ├── audioConfig.js        # Audio constants & settings
+│   └── uiConfig.js           # UI constants & settings
+├── data/
+│   └── exerciseLibrary.js    # Patterns & note generation
+└── App.jsx                   # Main component (~300 lines)
+```
+
+### Design Patterns
+
+| Pattern | Implementation |
+|---------|----------------|
+| **Finite State Machine** | Player states (IDLE → COUNTDOWN → PLAYING ↔ PAUSED) with validated transitions |
+| **Reducer Pattern** | Centralized state management via `useReducer` |
+| **Service Pattern** | `AudioService` class - pure JS, testable, decoupled from React |
+| **Composition** | Granular components (TabNote → TabString → TablatureView) |
+| **Config Centralization** | All constants in `/config` for easy tuning |
+
+### State Machine
+
+```
+     IDLE ──[PLAY]──▶ COUNTDOWN ──[COMPLETE]──▶ PLAYING ◀──[RESUME]── PAUSED
+       ▲                  │                        │                     │
+       └────[STOP]────────┴────────────────────────┴─────────────────────┘
+```
 
 ## 📚 Exercise Library
 
@@ -83,24 +134,7 @@ The app will be available at `http://localhost:5173`
 - **Styling:** Tailwind CSS 4.1
 - **Icons:** Lucide React
 - **Audio:** Web Audio API
-
-## 📁 Project Structure
-
-```
-bass-academy/
-├── src/
-│   ├── components/
-│   │   ├── ExerciseSelector.jsx  # Pattern & root selection
-│   │   ├── FretboardView.jsx     # Fretboard visualization
-│   │   └── Footer.jsx
-│   ├── data/
-│   │   └── exerciseLibrary.js    # Patterns & generation
-│   ├── App.jsx                   # Main component
-│   ├── index.css                 # Design system
-│   └── main.jsx
-├── index.html
-└── package.json
-```
+- **State:** useReducer + Finite State Machine
 
 ## 🗺️ Roadmap
 
@@ -111,6 +145,9 @@ bass-academy/
 - [x] Fretboard visualization mode
 - [x] Light/Dark theme toggle
 - [x] Countdown timer before playback
+- [x] **Modular architecture refactoring**
+- [x] **Finite State Machine for player states**
+- [x] **Decoupled AudioService class**
 
 ### 🔜 Upcoming
 - [ ] More artist techniques (Victor Wooten, Marcus Miller)
@@ -118,6 +155,8 @@ bass-academy/
 - [ ] PWA support for offline use
 - [ ] Real bass samples
 - [ ] Practice session statistics
+- [ ] Error boundaries
+- [ ] Unit tests with Vitest
 
 ## 🎓 Resources
 

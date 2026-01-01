@@ -1,6 +1,6 @@
 import React from "react";
 
-const FretboardView = ({ tabData, currentNoteIndex, currentMeasure }) => {
+const FretboardView = ({ tabData, currentNoteIndex }) => {
   const strings = ["G", "D", "A", "E"];
   const frets = [0, 1, 2, 3, 4, 5];
 
