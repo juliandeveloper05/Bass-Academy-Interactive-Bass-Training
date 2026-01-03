@@ -372,6 +372,10 @@ const BassTrainer = () => {
           toggleCountdown={actions.toggleCountdown}
           tempo={tempo}
           setTempo={actions.setTempo}
+          bassVolume={playerState.bassVolume}
+          setBassVolume={actions.setBassVolume}
+          metronomeVolume={playerState.metronomeVolume}
+          setMetronomeVolume={actions.setMetronomeVolume}
         />
 
         {!isAudioReady && (

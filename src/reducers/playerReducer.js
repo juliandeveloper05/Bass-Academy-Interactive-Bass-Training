@@ -27,6 +27,10 @@ export const initialPlayerState = {
   isNotesMuted: false,
   isCountdownEnabled: true,
   
+  // Volume controls (0.0 - 1.0)
+  bassVolume: 0.7,
+  metronomeVolume: 0.5,
+  
   // Audio state
   isAudioReady: false,
 };
@@ -49,6 +53,10 @@ export const PLAYER_ACTIONS = {
   TOGGLE_METRONOME: 'TOGGLE_METRONOME',
   TOGGLE_NOTES_MUTED: 'TOGGLE_NOTES_MUTED',
   TOGGLE_COUNTDOWN: 'TOGGLE_COUNTDOWN',
+  
+  // Volume
+  SET_BASS_VOLUME: 'SET_BASS_VOLUME',
+  SET_METRONOME_VOLUME: 'SET_METRONOME_VOLUME',
   
   // Audio
   SET_AUDIO_READY: 'SET_AUDIO_READY',
@@ -140,6 +148,13 @@ export function playerReducer(state, action) {
     // Audio
     case PLAYER_ACTIONS.SET_AUDIO_READY:
       return { ...state, isAudioReady: action.payload };
+    
+    // Volume
+    case PLAYER_ACTIONS.SET_BASS_VOLUME:
+      return { ...state, bassVolume: action.payload };
+      
+    case PLAYER_ACTIONS.SET_METRONOME_VOLUME:
+      return { ...state, metronomeVolume: action.payload };
       
     default:
       return state;

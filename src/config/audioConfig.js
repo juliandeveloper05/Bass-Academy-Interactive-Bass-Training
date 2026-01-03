@@ -63,3 +63,32 @@ export const SOUND_CONFIG = {
     duration: 0.2,
   },
 };
+
+// ============================================
+// SAMPLE-BASED AUDIO CONFIGURATION
+// ============================================
+
+// Sample file paths (relative to public folder)
+export const SAMPLE_PATHS = {
+  bass: '/audio/bass/bass-note.wav',
+  metronome: {
+    click: '/audio/metronome/click.wav',
+  },
+};
+
+// Sample playback settings
+export const SAMPLE_CONFIG = {
+  bass: {
+    volume: 0.7,
+    // Base note for pitch calculation (A2 = 110Hz is common for bass samples)
+    baseFrequency: 110,
+    baseNote: 'A', // The note of your bass sample
+    baseFret: 0,   // Open string or fret the sample was recorded at
+  },
+  metronome: {
+    volume: 0.5,
+    downbeatVolume: 0.7,
+    beatVolume: 0.4,
+    tripletVolume: 0.2,
+  },
+};

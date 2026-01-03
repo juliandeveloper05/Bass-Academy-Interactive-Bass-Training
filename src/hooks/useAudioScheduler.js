@@ -39,8 +39,8 @@ export function useAudioScheduler({
     const note = notesRef.current[index];
     const state = stateRef.current;
     
-    // Play the note sound
-    audio.playSound(note.string, note.fret, time, state.isNotesMuted);
+    // Play the note sound with current bass volume
+    audio.playSound(note.string, note.fret, time, state.isNotesMuted, state.bassVolume);
     
     // Calculate beat info
     const tripletInBeat = index % RHYTHM_CONFIG.tripletsPerBeat;
@@ -48,8 +48,8 @@ export function useAudioScheduler({
     const isFirstNoteOfBeat = tripletInBeat === 0;
     const isDownbeat = beat === 0;
     
-    // Play metronome click
-    audio.playMetronomeClick(time, isDownbeat, isFirstNoteOfBeat, state.isMetronomeEnabled);
+    // Play metronome click with current metronome volume
+    audio.playMetronomeClick(time, isDownbeat, isFirstNoteOfBeat, state.isMetronomeEnabled, state.metronomeVolume);
     
     // Schedule visual update
     const currentTime = audio.getCurrentTime();

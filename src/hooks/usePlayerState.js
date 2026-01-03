@@ -92,6 +92,15 @@ export function usePlayerState() {
     setAudioReady: useCallback((ready) => {
       dispatch({ type: PLAYER_ACTIONS.SET_AUDIO_READY, payload: ready });
     }, []),
+    
+    // Volume
+    setBassVolume: useCallback((volume) => {
+      dispatch({ type: PLAYER_ACTIONS.SET_BASS_VOLUME, payload: volume });
+    }, []),
+    
+    setMetronomeVolume: useCallback((volume) => {
+      dispatch({ type: PLAYER_ACTIONS.SET_METRONOME_VOLUME, payload: volume });
+    }, []),
   };
   
   // Derived state (computed from FSM state)

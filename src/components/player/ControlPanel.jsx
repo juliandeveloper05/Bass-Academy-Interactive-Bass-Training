@@ -1,12 +1,13 @@
 /**
  * ControlPanel Component - Bass Trainer
- * Wrapper component composing BeatIndicator, PlaybackControls, and TempoControl
+ * Wrapper component composing BeatIndicator, PlaybackControls, TempoControl, and VolumeControl
  */
 
 import React from 'react';
 import BeatIndicator from './BeatIndicator.jsx';
 import PlaybackControls from './PlaybackControls.jsx';
 import TempoControl from './TempoControl.jsx';
+import VolumeControl from './VolumeControl.jsx';
 
 function ControlPanel({
   // Beat state
@@ -27,6 +28,11 @@ function ControlPanel({
   toggleCountdown,
   tempo,
   setTempo,
+  // Volume
+  bassVolume,
+  setBassVolume,
+  metronomeVolume,
+  setMetronomeVolume,
 }) {
   return (
     <div 
@@ -60,9 +66,18 @@ function ControlPanel({
           tempo={tempo} 
           setTempo={setTempo} 
         />
+
+        {/* Volume Control */}
+        <VolumeControl
+          bassVolume={bassVolume}
+          setBassVolume={setBassVolume}
+          metronomeVolume={metronomeVolume}
+          setMetronomeVolume={setMetronomeVolume}
+        />
       </div>
     </div>
   );
 }
 
 export default ControlPanel;
+
