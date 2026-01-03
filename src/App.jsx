@@ -4,12 +4,16 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Music, AlertCircle, Guitar, List } from "lucide-react";
+import { Music, AlertCircle, Guitar, List, ArrowLeft } from "lucide-react";
 
 // Components - Layout
 import Header from "./components/layout/Header.jsx";
 import CountdownOverlay from "./components/layout/CountdownOverlay.jsx";
 import Footer from "./components/Footer.jsx";
+
+// Components - Home
+import HomeScreen from "./components/HomeScreen.jsx";
+import "./components/HomeScreen.css";
 
 // Components - Exercise
 import ExerciseSelector from "./components/ExerciseSelector.jsx";
@@ -41,8 +45,17 @@ import { THEME_CONFIG, COUNTDOWN_CONFIG, VIEW_MODES } from "./config/uiConfig.js
 import { 
   generateTabData, 
   getHeaderInfo,
-  DEFAULT_EXERCISE 
+  DEFAULT_EXERCISE,
+  PATTERNS
 } from "./data/exerciseLibrary.js";
+
+// Artist-specific default patterns
+const ARTIST_DEFAULTS = {
+  patitucci: { pattern1: 'linear11thsMaj', pattern2: 'linear11thsMin', root1: 'E', root2: 'F' },
+  wooten: { pattern1: 'doubleThumbMaj7', pattern2: 'doubleThumbMin7', root1: 'E', root2: 'A' },
+  flea: { pattern1: 'slapOctavesMaj', pattern2: 'ghostNotesFunk', root1: 'E', root2: 'E' },
+  jaco: { pattern1: 'sixteenthFunkBb', pattern2: 'melodicLinesMaj7', root1: 'Bb', root2: 'E' },
+};
 
 const BassTrainer = () => {
   // PWA Hook
@@ -65,11 +78,34 @@ const BassTrainer = () => {
   // View mode state
   const [viewMode, setViewMode] = useState(VIEW_MODES.TAB);
   
+  // Navigation state - always starts at home
+  const [currentScreen, setCurrentScreen] = useState('home');
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  
   // Exercise selection states
   const [selectedPattern, setSelectedPattern] = useState(DEFAULT_EXERCISE.patternId);
   const [selectedRoot, setSelectedRoot] = useState(DEFAULT_EXERCISE.rootNote);
   const [secondPattern, setSecondPattern] = useState(DEFAULT_EXERCISE.secondPatternId);
   const [secondRoot, setSecondRoot] = useState(DEFAULT_EXERCISE.secondRootNote);
+  
+  // Handle artist selection from HomeScreen
+  const handleSelectArtist = useCallback((artistId) => {
+    setSelectedArtist(artistId);
+    const defaults = ARTIST_DEFAULTS[artistId];
+    if (defaults) {
+      setSelectedPattern(defaults.pattern1);
+      setSecondPattern(defaults.pattern2);
+      setSelectedRoot(defaults.root1);
+      setSecondRoot(defaults.root2);
+    }
+    setCurrentScreen('exercise');
+  }, []);
+  
+  // Handle back to home
+  const handleBackToHome = useCallback(() => {
+    setCurrentScreen('home');
+    setSelectedArtist(null);
+  }, []);
   
   // Theme state with localStorage persistence
   const [theme, setTheme] = useState(() => {
@@ -229,181 +265,199 @@ const BassTrainer = () => {
         onDismiss={dismissUpdate}
       />
       
-      {/* Main Container */}
-      <div className="max-w-6xl w-full">
-        
-        {/* Header */}
-        <Header
-          headerInfo={headerInfo}
-          isPlaying={isPlaying}
-          isCountingDown={isCountingDown}
-          theme={theme}
-          toggleTheme={toggleTheme}
-        />
-
-        {/* Countdown Overlay */}
-        {isCountingDown && (
-          <CountdownOverlay 
-            countdown={countdown} 
-            onCancel={handleStop} 
+      {/* Conditional Rendering: Home vs Exercise */}
+      {currentScreen === 'home' ? (
+        <HomeScreen onSelectArtist={handleSelectArtist} />
+      ) : (
+        /* Exercise Trainer View */
+        <div className="max-w-6xl w-full">
+          
+          {/* Back Button */}
+          <button
+            onClick={handleBackToHome}
+            className="mb-4 flex items-center gap-2 px-4 py-2 rounded-xl glass text-[var(--color-cream)] 
+                       hover:bg-[var(--color-primary-medium)]/30 transition-all duration-200
+                       focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]"
+            aria-label="Back to artist selection"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Artists</span>
+          </button>
+          
+          {/* Header */}
+          <Header
+            headerInfo={headerInfo}
+            isPlaying={isPlaying}
+            isCountingDown={isCountingDown}
+            theme={theme}
+            toggleTheme={toggleTheme}
           />
-        )}
 
-        {/* Exercise Selector */}
-        <ExerciseSelector
-          selectedPattern={selectedPattern}
-          setSelectedPattern={setSelectedPattern}
-          selectedRoot={selectedRoot}
-          setSelectedRoot={setSelectedRoot}
-          secondPattern={secondPattern}
-          setSecondPattern={setSecondPattern}
-          secondRoot={secondRoot}
-          setSecondRoot={setSecondRoot}
-          isPlaying={isPlaying || isCountingDown}
-        />
+          {/* Countdown Overlay */}
+          {isCountingDown && (
+            <CountdownOverlay 
+              countdown={countdown} 
+              onCancel={handleStop} 
+            />
+          )}
 
-        {/* Educational Info Panel */}
-        <EducationalInfoPanel
-          selectedRoot={selectedRoot}
-          selectedPattern={selectedPattern}
-          secondRoot={secondRoot}
-          secondPattern={secondPattern}
-        />
+          {/* Exercise Selector */}
+          <ExerciseSelector
+            selectedPattern={selectedPattern}
+            setSelectedPattern={setSelectedPattern}
+            selectedRoot={selectedRoot}
+            setSelectedRoot={setSelectedRoot}
+            secondPattern={secondPattern}
+            setSecondPattern={setSecondPattern}
+            secondRoot={secondRoot}
+            setSecondRoot={setSecondRoot}
+            isPlaying={isPlaying || isCountingDown}
+            selectedArtist={selectedArtist}
+          />
 
-        {/* Main Practice Area */}
-        <div 
-          className="glass-strong rounded-2xl sm:rounded-3xl overflow-hidden mb-4 sm:mb-6 animate-fadeInUp" 
-          style={{animationDelay: "0.2s"}}
-        >
-          <div className="bg-[var(--color-primary-dark)]/50 px-3 sm:px-8 py-2 sm:py-4 border-b border-[var(--color-primary-medium)]/30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl gradient-gold flex items-center justify-center">
-                  {viewMode === VIEW_MODES.TAB ? (
-                    <Music className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary-deep)]" />
-                  ) : (
-                    <Guitar className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary-deep)]" />
-                  )}
+          {/* Educational Info Panel */}
+          <EducationalInfoPanel
+            selectedRoot={selectedRoot}
+            selectedPattern={selectedPattern}
+            secondRoot={secondRoot}
+            secondPattern={secondPattern}
+          />
+
+          {/* Main Practice Area */}
+          <div 
+            className="glass-strong rounded-2xl sm:rounded-3xl overflow-hidden mb-4 sm:mb-6 animate-fadeInUp" 
+            style={{animationDelay: "0.2s"}}
+          >
+            <div className="bg-[var(--color-primary-dark)]/50 px-3 sm:px-8 py-2 sm:py-4 border-b border-[var(--color-primary-medium)]/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl gradient-gold flex items-center justify-center">
+                    {viewMode === VIEW_MODES.TAB ? (
+                      <Music className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary-deep)]" />
+                    ) : (
+                      <Guitar className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary-deep)]" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-cream)] text-sm sm:text-base">
+                      {viewMode === VIEW_MODES.TAB ? 'Tablature' : 'Fretboard'}
+                    </h3>
+                    <p className="text-[10px] sm:text-xs text-[var(--color-primary-light)] hidden sm:block">
+                      {viewMode === VIEW_MODES.TAB ? 'Follow the highlighted notes' : 'Vista del diapasón'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-[var(--color-cream)] text-sm sm:text-base">
-                    {viewMode === VIEW_MODES.TAB ? 'Tablature' : 'Fretboard'}
-                  </h3>
-                  <p className="text-[10px] sm:text-xs text-[var(--color-primary-light)] hidden sm:block">
-                    {viewMode === VIEW_MODES.TAB ? 'Follow the highlighted notes' : 'Vista del diapasón'}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-1 sm:gap-2">
-                <button
-                  onClick={() => setViewMode(VIEW_MODES.TAB)}
-                  aria-label="Tablature view"
-                  aria-pressed={viewMode === VIEW_MODES.TAB}
-                  className={`
-                    flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl
-                    font-medium text-[10px] sm:text-xs transition-all duration-200
-                    focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-1 focus:ring-offset-[var(--color-primary-deep)]
-                    ${viewMode === VIEW_MODES.TAB
-                      ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]'
-                      : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] border border-[var(--color-primary-medium)] hover:border-[var(--color-gold)]/50'
-                    }
-                  `}
-                >
-                  <List className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Tab</span>
-                </button>
-                <button
-                  onClick={() => setViewMode(VIEW_MODES.FRETBOARD)}
-                  aria-label="Fretboard view"
-                  aria-pressed={viewMode === VIEW_MODES.FRETBOARD}
-                  className={`
-                    flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl
-                    font-medium text-[10px] sm:text-xs transition-all duration-200
-                    focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-1 focus:ring-offset-[var(--color-primary-deep)]
-                    ${viewMode === VIEW_MODES.FRETBOARD
-                      ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]'
-                      : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] border border-[var(--color-primary-medium)] hover:border-[var(--color-gold)]/50'
-                    }
-                  `}
-                >
-                  <Guitar className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Diapasón</span>
-                </button>
                 
-                <div className="font-mono text-xs sm:text-sm bg-[var(--color-primary-deep)] px-2 sm:px-4 py-1 sm:py-2 rounded-md sm:rounded-lg border border-[var(--color-primary-medium)] ml-1 sm:ml-2">
-                  <span className="text-[var(--color-gold)]">{currentNoteIndex >= 0 ? currentNoteIndex + 1 : 0}</span>
-                  <span className="text-[var(--color-primary-light)]"> / {tabData.length}</span>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <button
+                    onClick={() => setViewMode(VIEW_MODES.TAB)}
+                    aria-label="Tablature view"
+                    aria-pressed={viewMode === VIEW_MODES.TAB}
+                    className={`
+                      flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl
+                      font-medium text-[10px] sm:text-xs transition-all duration-200
+                      focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-1 focus:ring-offset-[var(--color-primary-deep)]
+                      ${viewMode === VIEW_MODES.TAB
+                        ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]'
+                        : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] border border-[var(--color-primary-medium)] hover:border-[var(--color-gold)]/50'
+                      }
+                    `}
+                  >
+                    <List className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Tab</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode(VIEW_MODES.FRETBOARD)}
+                    aria-label="Fretboard view"
+                    aria-pressed={viewMode === VIEW_MODES.FRETBOARD}
+                    className={`
+                      flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl
+                      font-medium text-[10px] sm:text-xs transition-all duration-200
+                      focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)] focus:ring-offset-1 focus:ring-offset-[var(--color-primary-deep)]
+                      ${viewMode === VIEW_MODES.FRETBOARD
+                        ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]'
+                        : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] border border-[var(--color-primary-medium)] hover:border-[var(--color-gold)]/50'
+                      }
+                    `}
+                  >
+                    <Guitar className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">Diapasón</span>
+                  </button>
+                  
+                  <div className="font-mono text-xs sm:text-sm bg-[var(--color-primary-deep)] px-2 sm:px-4 py-1 sm:py-2 rounded-md sm:rounded-lg border border-[var(--color-primary-medium)] ml-1 sm:ml-2">
+                    <span className="text-[var(--color-gold)]">{currentNoteIndex >= 0 ? currentNoteIndex + 1 : 0}</span>
+                    <span className="text-[var(--color-primary-light)]"> / {tabData.length}</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {viewMode === VIEW_MODES.FRETBOARD ? (
+              <FretboardView 
+                tabData={tabData} 
+                currentNoteIndex={currentNoteIndex}
+              />
+            ) : (
+              <>
+                <TablatureDesktop
+                  tabData={tabData}
+                  currentNoteIndex={currentNoteIndex}
+                  selectedRoot={selectedRoot}
+                  selectedPattern={selectedPattern}
+                  secondRoot={secondRoot}
+                  secondPattern={secondPattern}
+                />
+                <TablatureMobile
+                  tabData={tabData}
+                  currentNoteIndex={currentNoteIndex}
+                  selectedRoot={selectedRoot}
+                  selectedPattern={selectedPattern}
+                  secondRoot={secondRoot}
+                  secondPattern={secondPattern}
+                />
+              </>
+            )}
           </div>
 
-          {viewMode === VIEW_MODES.FRETBOARD ? (
-            <FretboardView 
-              tabData={tabData} 
-              currentNoteIndex={currentNoteIndex}
-            />
-          ) : (
-            <>
-              <TablatureDesktop
-                tabData={tabData}
-                currentNoteIndex={currentNoteIndex}
-                selectedRoot={selectedRoot}
-                selectedPattern={selectedPattern}
-                secondRoot={secondRoot}
-                secondPattern={secondPattern}
-              />
-              <TablatureMobile
-                tabData={tabData}
-                currentNoteIndex={currentNoteIndex}
-                selectedRoot={selectedRoot}
-                selectedPattern={selectedPattern}
-                secondRoot={secondRoot}
-                secondPattern={secondPattern}
-              />
-            </>
+          {/* Control Panel */}
+          <ControlPanel
+            currentBeat={currentBeat}
+            currentTriplet={currentTriplet}
+            isPlaying={isPlaying}
+            handlePlay={handlePlay}
+            handleStop={handleStop}
+            isLooping={isLooping}
+            toggleLoop={actions.toggleLoop}
+            isNotesMuted={isNotesMuted}
+            toggleNotesMuted={actions.toggleNotesMuted}
+            isMetronomeEnabled={isMetronomeEnabled}
+            toggleMetronome={actions.toggleMetronome}
+            isCountdownEnabled={isCountdownEnabled}
+            toggleCountdown={actions.toggleCountdown}
+            tempo={tempo}
+            setTempo={actions.setTempo}
+            bassVolume={playerState.bassVolume}
+            setBassVolume={handleBassVolume}
+            metronomeVolume={playerState.metronomeVolume}
+            setMetronomeVolume={handleMetronomeVolume}
+          />
+
+          {!isAudioReady && (
+            <div 
+              className="mt-3 sm:mt-6 glass rounded-lg sm:rounded-xl p-2 sm:p-4 border border-[var(--color-warning)]/30 
+                         flex items-center justify-center gap-2 sm:gap-3 animate-fadeInUp"
+              style={{animationDelay: "0.4s"}}
+            >
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-warning)]" />
+              <span className="text-[var(--color-warning)] text-xs sm:text-sm font-medium">
+                Presiona PLAY para activar el audio
+              </span>
+            </div>
           )}
+
+          <Footer />
         </div>
-
-        {/* Control Panel */}
-        <ControlPanel
-          currentBeat={currentBeat}
-          currentTriplet={currentTriplet}
-          isPlaying={isPlaying}
-          handlePlay={handlePlay}
-          handleStop={handleStop}
-          isLooping={isLooping}
-          toggleLoop={actions.toggleLoop}
-          isNotesMuted={isNotesMuted}
-          toggleNotesMuted={actions.toggleNotesMuted}
-          isMetronomeEnabled={isMetronomeEnabled}
-          toggleMetronome={actions.toggleMetronome}
-          isCountdownEnabled={isCountdownEnabled}
-          toggleCountdown={actions.toggleCountdown}
-          tempo={tempo}
-          setTempo={actions.setTempo}
-          bassVolume={playerState.bassVolume}
-          setBassVolume={handleBassVolume}
-          metronomeVolume={playerState.metronomeVolume}
-          setMetronomeVolume={handleMetronomeVolume}
-        />
-
-        {!isAudioReady && (
-          <div 
-            className="mt-3 sm:mt-6 glass rounded-lg sm:rounded-xl p-2 sm:p-4 border border-[var(--color-warning)]/30 
-                       flex items-center justify-center gap-2 sm:gap-3 animate-fadeInUp"
-            style={{animationDelay: "0.4s"}}
-          >
-            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-warning)]" />
-            <span className="text-[var(--color-warning)] text-xs sm:text-sm font-medium">
-              Presiona PLAY para activar el audio
-            </span>
-          </div>
-        )}
-
-        <Footer />
-      </div>
+      )}
     </div>
   );
 };

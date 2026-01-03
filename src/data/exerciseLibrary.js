@@ -258,6 +258,386 @@ export const PATTERNS = {
       { interval: 0, string: 'E' },
     ]
   },
+
+  // === VICTOR WOOTEN - Advanced Slap ===
+  doubleThumbMaj7: {
+    id: 'doubleThumbMaj7',
+    name: 'Double Thumbing Maj7',
+    description: 'Classical Thump style - Down/Up thumb en Maj7',
+    category: 'VictorWooten',
+    difficulty: 5,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4, // 16th notes for slap
+    notes: [
+      // Pattern: Thumb down-up through arpeggio
+      { interval: 0, string: 'E' },   // Root (thumb down)
+      { interval: 0, string: 'E' },   // Root (thumb up)
+      { interval: 4, string: 'E' },   // 3rd (thumb down)
+      { interval: 4, string: 'E' },   // 3rd (thumb up)
+      { interval: 7, string: 'A' },   // 5th (thumb down)
+      { interval: 7, string: 'A' },   // 5th (thumb up)
+      { interval: 11, string: 'D' },  // 7th (thumb down)
+      { interval: 11, string: 'D' },  // 7th (thumb up)
+      // Descending
+      { interval: 11, string: 'D' },
+      { interval: 11, string: 'D' },
+      { interval: 7, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 4, string: 'E' },
+      { interval: 4, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  doubleThumbMin7: {
+    id: 'doubleThumbMin7',
+    name: 'Double Thumbing m7',
+    description: 'Classical Thump style - Down/Up thumb en m7',
+    category: 'VictorWooten',
+    difficulty: 5,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 3, string: 'E' },   // Minor 3rd
+      { interval: 3, string: 'E' },
+      { interval: 7, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 10, string: 'D' },  // Minor 7th
+      { interval: 10, string: 'D' },
+      { interval: 10, string: 'D' },
+      { interval: 10, string: 'D' },
+      { interval: 7, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 3, string: 'E' },
+      { interval: 3, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  openHammerDom7: {
+    id: 'openHammerDom7',
+    name: 'Open Hammer Pluck Dom7',
+    description: 'Triplet pattern: Thumb → Hammer → Pluck',
+    category: 'VictorWooten',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 3, // Triplets
+    notes: [
+      // Open hammer pluck triplets on Dom7
+      { interval: 0, string: 'E' },   // Thumb (open/low)
+      { interval: 4, string: 'E' },   // Hammer-on 3rd
+      { interval: 7, string: 'A' },   // Pluck 5th
+      { interval: 0, string: 'E' },
+      { interval: 10, string: 'D' },  // Hammer b7
+      { interval: 12, string: 'D' },  // Pluck octave
+      // Descend
+      { interval: 12, string: 'D' },
+      { interval: 10, string: 'D' },
+      { interval: 7, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 4, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  openHammerDim7: {
+    id: 'openHammerDim7',
+    name: 'Open Hammer Pluck Dim7',
+    description: 'Triplet pattern en arpegio disminuido',
+    category: 'VictorWooten',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 3,
+    notes: [
+      { interval: 0, string: 'E' },
+      { interval: 3, string: 'E' },   // b3
+      { interval: 6, string: 'A' },   // b5
+      { interval: 0, string: 'E' },
+      { interval: 9, string: 'D' },   // bb7
+      { interval: 12, string: 'D' },
+      { interval: 12, string: 'D' },
+      { interval: 9, string: 'D' },
+      { interval: 6, string: 'A' },
+      { interval: 6, string: 'A' },
+      { interval: 3, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  // === FLEA - Funk-Punk Slap ===
+  slapOctavesMaj: {
+    id: 'slapOctavesMaj',
+    name: 'Slap Octaves Major',
+    description: 'Higher Ground style - Slap/Pop octavas',
+    category: 'Flea',
+    difficulty: 3,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      // Slap-pop octave pattern (16ths with ghost notes implied)
+      { interval: 0, string: 'E' },   // Slap root
+      { interval: 0, string: 'E' },   // Ghost
+      { interval: 12, string: 'D' },  // Pop octave
+      { interval: 0, string: 'E' },   // Ghost
+      { interval: 4, string: 'E' },   // Slap 3rd
+      { interval: 4, string: 'E' },
+      { interval: 16, string: 'G' },  // Pop octave+3rd
+      { interval: 4, string: 'E' },
+      { interval: 7, string: 'A' },   // Slap 5th
+      { interval: 7, string: 'A' },
+      { interval: 19, string: 'G' },  // Pop octave+5th
+      { interval: 7, string: 'A' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 12, string: 'D' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  slapOctavesMin: {
+    id: 'slapOctavesMin',
+    name: 'Slap Octaves Minor',
+    description: 'Funk octavas en tonalidad menor',
+    category: 'Flea',
+    difficulty: 3,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 12, string: 'D' },
+      { interval: 0, string: 'E' },
+      { interval: 3, string: 'E' },   // Minor 3rd
+      { interval: 3, string: 'E' },
+      { interval: 15, string: 'G' },
+      { interval: 3, string: 'E' },
+      { interval: 7, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 19, string: 'G' },
+      { interval: 7, string: 'A' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 12, string: 'D' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  ghostNotesFunk: {
+    id: 'ghostNotesFunk',
+    name: 'Ghost Notes Funk',
+    description: 'Give It Away style - Notas fantasma percusivas',
+    category: 'Flea',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      // Funk pattern with emphasis on pocket (ghost = same note, softer)
+      { interval: 0, string: 'E' },   // Hit
+      { interval: 0, string: 'E' },   // Ghost
+      { interval: 0, string: 'E' },   // Ghost
+      { interval: 3, string: 'E' },   // b3 (accent)
+      { interval: 0, string: 'E' },
+      { interval: 5, string: 'A' },   // 4th
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 7, string: 'A' },   // 5th (accent)
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 5, string: 'A' },
+      { interval: 3, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  ghostNotesFusion: {
+    id: 'ghostNotesFusion',
+    name: 'Ghost Notes Fusion',
+    description: 'Groove fusion con ghost notes melódicas',
+    category: 'Flea',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 4, string: 'E' },   // Major 3rd
+      { interval: 0, string: 'E' },
+      { interval: 7, string: 'A' },
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 11, string: 'D' },  // Maj7
+      { interval: 12, string: 'D' },  // Octave
+      { interval: 0, string: 'E' },
+      { interval: 0, string: 'E' },
+      { interval: 11, string: 'D' },
+      { interval: 7, string: 'A' },
+      { interval: 0, string: 'E' },
+      { interval: 4, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  // === JACO PASTORIUS - Fingerstyle ===
+  naturalHarmonicsMaj: {
+    id: 'naturalHarmonicsMaj',
+    name: 'Natural Harmonics Maj',
+    description: 'Portrait of Tracy style - Armónicos naturales',
+    category: 'JacoPastorius',
+    difficulty: 3,
+    beatsPerMeasure: 4,
+    notesPerBeat: 2, // Slower, melodic
+    notes: [
+      // Harmonics at 12th, 7th, 5th positions (intervals approximate pitches)
+      { interval: 12, string: 'E' },  // 12th fret harmonic = octave
+      { interval: 19, string: 'E' },  // 7th fret harmonic
+      { interval: 24, string: 'E' },  // 5th fret harmonic (2 octaves)
+      { interval: 12, string: 'A' },
+      { interval: 19, string: 'A' },
+      { interval: 24, string: 'A' },
+      { interval: 12, string: 'D' },
+      { interval: 19, string: 'D' },
+    ]
+  },
+
+  naturalHarmonicsMin: {
+    id: 'naturalHarmonicsMin',
+    name: 'Natural Harmonics Min',
+    description: 'Melodía en armónicos - Tonalidad menor',
+    category: 'JacoPastorius',
+    difficulty: 3,
+    beatsPerMeasure: 4,
+    notesPerBeat: 2,
+    notes: [
+      { interval: 12, string: 'E' },
+      { interval: 15, string: 'E' },  // Minor flavored
+      { interval: 19, string: 'E' },
+      { interval: 12, string: 'A' },
+      { interval: 15, string: 'A' },
+      { interval: 19, string: 'A' },
+      { interval: 12, string: 'D' },
+      { interval: 15, string: 'D' },
+    ]
+  },
+
+  sixteenthFunkBb: {
+    id: 'sixteenthFunkBb',
+    name: '16th Note Funk Bb',
+    description: 'The Chicken style - Línea funk en Bb',
+    category: 'JacoPastorius',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      // The Chicken inspired 16th note funk
+      { interval: 0, string: 'A' },   // Bb root (fret 1 on A)
+      { interval: 0, string: 'A' },   // Ghost
+      { interval: 3, string: 'A' },   // Db
+      { interval: 0, string: 'A' },
+      { interval: 5, string: 'A' },   // Eb
+      { interval: 3, string: 'A' },
+      { interval: 0, string: 'A' },
+      { interval: 0, string: 'A' },
+      { interval: 0, string: 'A' },
+      { interval: 0, string: 'A' },
+      { interval: 3, string: 'A' },
+      { interval: 5, string: 'A' },
+      { interval: 6, string: 'A' },   // E (tritone)
+      { interval: 5, string: 'A' },
+      { interval: 3, string: 'A' },
+      { interval: 0, string: 'A' },
+    ]
+  },
+
+  sixteenthFunkEb: {
+    id: 'sixteenthFunkEb',
+    name: '16th Note Funk Eb',
+    description: 'Variación The Chicken en Eb',
+    category: 'JacoPastorius',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      { interval: 0, string: 'D' },   // Eb root
+      { interval: 0, string: 'D' },
+      { interval: 3, string: 'D' },   // Gb
+      { interval: 0, string: 'D' },
+      { interval: 5, string: 'D' },   // Ab
+      { interval: 3, string: 'D' },
+      { interval: 0, string: 'D' },
+      { interval: 0, string: 'D' },
+      { interval: 0, string: 'D' },
+      { interval: 0, string: 'D' },
+      { interval: 3, string: 'D' },
+      { interval: 5, string: 'D' },
+      { interval: 7, string: 'D' },   // Bb
+      { interval: 5, string: 'D' },
+      { interval: 3, string: 'D' },
+      { interval: 0, string: 'D' },
+    ]
+  },
+
+  melodicLinesMaj7: {
+    id: 'melodicLinesMaj7',
+    name: 'Melodic Lines Maj7',
+    description: 'Donna Lee style - Arpegio melódico Maj7',
+    category: 'JacoPastorius',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      // Bebop-style melodic line on Maj7
+      { interval: 0, string: 'E' },
+      { interval: 2, string: 'E' },   // 9th
+      { interval: 4, string: 'E' },   // 3rd
+      { interval: 5, string: 'A' },   // 11th
+      { interval: 7, string: 'A' },   // 5th
+      { interval: 9, string: 'A' },   // 13th
+      { interval: 11, string: 'D' },  // 7th
+      { interval: 12, string: 'D' },  // Octave
+      { interval: 14, string: 'D' },  // 9th up
+      { interval: 12, string: 'D' },
+      { interval: 11, string: 'D' },
+      { interval: 9, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 5, string: 'A' },
+      { interval: 4, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
+
+  melodicLinesMin7: {
+    id: 'melodicLinesMin7',
+    name: 'Melodic Lines m7',
+    description: 'Línea melódica estilo bebop en m7',
+    category: 'JacoPastorius',
+    difficulty: 4,
+    beatsPerMeasure: 4,
+    notesPerBeat: 4,
+    notes: [
+      { interval: 0, string: 'E' },
+      { interval: 2, string: 'E' },   // 9th
+      { interval: 3, string: 'E' },   // b3
+      { interval: 5, string: 'A' },   // 11th
+      { interval: 7, string: 'A' },   // 5th
+      { interval: 8, string: 'A' },   // b13
+      { interval: 10, string: 'D' },  // b7
+      { interval: 12, string: 'D' },
+      { interval: 14, string: 'D' },
+      { interval: 12, string: 'D' },
+      { interval: 10, string: 'D' },
+      { interval: 8, string: 'A' },
+      { interval: 7, string: 'A' },
+      { interval: 5, string: 'A' },
+      { interval: 3, string: 'E' },
+      { interval: 0, string: 'E' },
+    ]
+  },
 };
 
 // Categories for grouping in UI
@@ -270,6 +650,30 @@ export const CATEGORIES = [
     type: 'artist',
     artist: 'John Patitucci',
     subtitle: 'Modern Jazz Bass Technique'
+  },
+  { 
+    id: 'VictorWooten', 
+    name: 'Victor Wooten Slap', 
+    icon: '🔥',
+    type: 'artist',
+    artist: 'Victor Wooten',
+    subtitle: 'Advanced Slap Techniques'
+  },
+  { 
+    id: 'Flea', 
+    name: 'Flea Funk-Punk', 
+    icon: '🌶️',
+    type: 'artist',
+    artist: 'Flea',
+    subtitle: 'Funk-Punk Slap Bass'
+  },
+  { 
+    id: 'JacoPastorius', 
+    name: 'Jaco Pastorius Fingerstyle', 
+    icon: '🎹',
+    type: 'artist',
+    artist: 'Jaco Pastorius',
+    subtitle: 'Fretless Fingerstyle Mastery'
   },
   { 
     id: 'Basic 7ths', 
