@@ -2,8 +2,9 @@
 
 <div align="center">
 
+![Version](https://img.shields.io/badge/Version-2.1.0-C9A554?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 
 **Interactive Bass Training Platform**
@@ -16,15 +17,25 @@
 
 ## 📖 About
 
-A comprehensive bass practice platform featuring a **selectable exercise library** with techniques from legendary artists like **John Patitucci**.
+A comprehensive bass practice platform featuring a **selectable exercise library** with techniques from legendary artists like **John Patitucci**, **Victor Wooten**, **Flea**, and **Jaco Pastorius**.
 
 Practice arpeggios, scales, and patterns with real-time tablature, fretboard visualization, and Web Audio synthesis - all transposable to any key.
+
+## 🆕 What's New in v2.1.0
+
+- 🏠 **Artist Selection Home Screen** - Choose your favorite bass legend to study
+- 🎨 **Multi-Artist Library** - Patterns from Patitucci, Wooten, Flea & Jaco
+- 📱 **Improved Responsive Design** - Optimized spacing and typography for all devices
+- 🔧 **Navigation & Back Button** - Easy transition between home and trainer
+- 🛡️ **Defensive Error Handling** - Null checks to prevent crashes
+- ⚡ **Cache Management** - Service Worker v2.0.0 for better updates
 
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
-| 📚 **Exercise Library** | 8+ arpeggio patterns: Maj7, m7, dom7, dim7, Linear 11ths, and more |
+| 🏠 **Artist Home Screen** | Select from legendary bassists to access their specific exercises |
+| 📚 **Exercise Library** | 10+ patterns: Linear 11ths, Double Thumb, Slap, Ghost Notes, and more |
 | 🎹 **Root Transposition** | Practice any pattern in all 12 chromatic keys |
 | 🎯 **Interactive Tablature** | Real-time visual feedback highlighting notes as they play |
 | 🎸 **Fretboard View** | Alternative visualization showing the bass neck |
@@ -33,7 +44,43 @@ Practice arpeggios, scales, and patterns with real-time tablature, fretboard vis
 | ⏱️ **Tempo Control** | Adjustable BPM from 40-160 |
 | 🔄 **Loop Mode** | Continuous practice without interruption |
 | 🌓 **Dark/Light Theme** | Toggle between themes with persistence |
-| 📱 **Responsive Design** | Optimized for desktop and mobile |
+| 📱 **Responsive Design** | Mobile-first design optimized for all screen sizes |
+| 📲 **PWA Support** | Install on any device for offline practice |
+
+## 🎸 Artist Techniques
+
+### John Patitucci
+| Pattern | Style | Difficulty |
+|---------|-------|------------|
+| Linear 11ths (Major) | Modern Jazz | ★★★★☆ |
+| Linear 11ths (Minor) | Modern Jazz | ★★★★☆ |
+
+### Victor Wooten
+| Pattern | Style | Difficulty |
+|---------|-------|------------|
+| Double Thumb Maj7 | Slap & Pop | ★★★★★ |
+| Open-Hammer Pluck | Groove | ★★★★☆ |
+
+### Flea (RHCP)
+| Pattern | Style | Difficulty |
+|---------|-------|------------|
+| Higher Ground Octaves | Funk-Rock | ★★★☆☆ |
+| Give It Away Groove | Punk-Funk | ★★★☆☆ |
+
+### Jaco Pastorius
+| Pattern | Style | Difficulty |
+|---------|-------|------------|
+| The Chicken (16ths) | Jazz-Funk | ★★★★☆ |
+| Chromatic Approach | Fretless | ★★★★★ |
+
+### Basic 7th Arpeggios
+| Pattern | Intervals | Difficulty |
+|---------|-----------|------------|
+| Major 7th | 1, 3, 5, 7 | ★★☆☆☆ |
+| Minor 7th | 1, b3, 5, b7 | ★★☆☆☆ |
+| Dominant 7th | 1, 3, 5, b7 | ★★☆☆☆ |
+| Half Diminished | 1, b3, b5, b7 | ★★★☆☆ |
+| Diminished 7th | 1, b3, b5, bb7 | ★★★☆☆ |
 
 ## 🏗️ Architecture
 
@@ -45,69 +92,35 @@ This project follows modern React architecture patterns for maintainability and 
 src/
 ├── components/
 │   ├── layout/           # Header, CountdownOverlay, Footer
-│   ├── player/           # ControlPanel, BeatIndicator, PlaybackControls, TempoControl
-│   ├── tablature/        # TabNote, TabString, MeasureGuide, Desktop/Mobile views
-│   └── exercise/         # ExerciseSelector, EducationalInfoPanel
+│   ├── player/           # ControlPanel, BeatIndicator, PlaybackControls
+│   ├── tablature/        # TabNote, TabString, MeasureGuide, Desktop/Mobile
+│   ├── exercise/         # ExerciseSelector, EducationalInfoPanel
+│   └── HomeScreen.jsx    # Artist selection landing page
 ├── hooks/
 │   ├── useBassAudio.js       # Audio engine wrapper
 │   ├── useAudioScheduler.js  # Note scheduling with lookahead
-│   └── usePlayerState.js     # State management with FSM
+│   ├── usePlayerState.js     # State management with FSM
+│   └── usePWA.js             # PWA installation & updates
 ├── services/
-│   └── AudioService.js       # Pure JS audio synthesis (testable)
-├── machines/
-│   └── playerStateMachine.js # Finite State Machine for player
-├── reducers/
-│   └── playerReducer.js      # Centralized state with FSM integration
-├── contexts/
-│   └── AudioEngineContext.jsx
+│   └── AudioService.js       # Pure JS audio synthesis
 ├── config/
 │   ├── audioConfig.js        # Audio constants & settings
 │   └── uiConfig.js           # UI constants & settings
 ├── data/
-│   └── exerciseLibrary.js    # Patterns & note generation
-└── App.jsx                   # Main component (~300 lines)
+│   └── exerciseLibrary.js    # Patterns, categories & generation
+├── App.jsx                   # Router between Home & Trainer
+└── BassTrainer.jsx           # Exercise trainer component
 ```
 
 ### Design Patterns
 
 | Pattern | Implementation |
 |---------|----------------|
-| **Finite State Machine** | Player states (IDLE → COUNTDOWN → PLAYING ↔ PAUSED) with validated transitions |
+| **Finite State Machine** | Player states (IDLE → COUNTDOWN → PLAYING ↔ PAUSED) |
 | **Reducer Pattern** | Centralized state management via `useReducer` |
-| **Service Pattern** | `AudioService` class - pure JS, testable, decoupled from React |
+| **Service Pattern** | `AudioService` class - pure JS, testable |
 | **Composition** | Granular components (TabNote → TabString → TablatureView) |
-| **Config Centralization** | All constants in `/config` for easy tuning |
-
-### State Machine
-
-```
-     IDLE ──[PLAY]──▶ COUNTDOWN ──[COMPLETE]──▶ PLAYING ◀──[RESUME]── PAUSED
-       ▲                  │                        │                     │
-       └────[STOP]────────┴────────────────────────┴─────────────────────┘
-```
-
-## 📚 Exercise Library
-
-### Artist Techniques
-| Pattern | Category | Difficulty |
-|---------|----------|------------|
-| Linear 11ths (Major) | John Patitucci | ★★★★☆ |
-| Linear 11ths (Minor) | John Patitucci | ★★★★☆ |
-
-### Basic 7th Arpeggios
-| Pattern | Intervals | Difficulty |
-|---------|-----------|------------|
-| Major 7th | 1, 3, 5, 7 | ★★☆☆☆ |
-| Minor 7th | 1, b3, 5, b7 | ★★☆☆☆ |
-| Dominant 7th | 1, 3, 5, b7 | ★★☆☆☆ |
-| Half Diminished | 1, b3, b5, b7 | ★★★☆☆ |
-| Diminished 7th | 1, b3, b5, bb7 | ★★★☆☆ |
-
-### Advanced 7th Arpeggios
-| Pattern | Intervals | Difficulty |
-|---------|-----------|------------|
-| Minor Major 7th | 1, b3, 5, 7 | ★★★★☆ |
-| Augmented 7th | 1, 3, #5, 7 | ★★★★☆ |
+| **Config Centralization** | All constants in `/config` |
 
 ## 🚀 Installation
 
@@ -130,43 +143,41 @@ The app will be available at `http://localhost:5173`
 ## 🛠️ Tech Stack
 
 - **Framework:** React 19.2 with React Compiler
-- **Build Tool:** Vite 7.2
+- **Build Tool:** Vite 6.3
 - **Styling:** Tailwind CSS 4.1
 - **Icons:** Lucide React
 - **Audio:** Web Audio API
 - **State:** useReducer + Finite State Machine
+- **PWA:** Service Worker with Cache Management
 
 ## 🗺️ Roadmap
 
-### ✅ Completed
+### ✅ Completed (v2.1.0)
+- [x] **Artist selection home screen**
+- [x] **Multi-artist exercise library** (Patitucci, Wooten, Flea, Jaco)
+- [x] **Improved responsive design** for mobile
+- [x] **Navigation system** with back button
+- [x] **Defensive error handling**
 - [x] Exercise library with selectable patterns
 - [x] Root note transposition (12 keys)
 - [x] Metronome with triplet subdivisions
-- [x] Beat indicator with measure display
 - [x] Fretboard visualization mode
-- [x] Light/Dark theme toggle with persistence
-- [x] Countdown timer before playback
-- [x] Tempo presets (Slow/Medium/Fast)
-- [x] Keyboard accessibility (Space = play/pause)
-- [x] **PWA support** — Installable with offline use
-- [x] **Real bass samples** — Web Audio with pitch-shifted samples
-- [x] **Master volume controls** — Independent bass & metronome volume
-- [x] **Modular architecture refactoring**
-- [x] **Finite State Machine for player states**
-- [x] **Decoupled AudioService class**
+- [x] Light/Dark theme toggle
+- [x] PWA support with offline use
+- [x] Modular architecture
 
-### 🔜 Upcoming
-- [ ] More artist techniques (Victor Wooten, Marcus Miller)
+### 🔜 Upcoming (v2.2.0)
 - [ ] Scale patterns (Major, Minor, Modes)
 - [ ] Practice session statistics
-- [ ] Save progress to LocalStorage
-- [ ] Error boundaries
+- [ ] Progress tracking with LocalStorage
+- [ ] Custom exercise builder
+- [ ] Audio recording for self-review
 - [ ] Unit tests with Vitest
 
 ## 🎓 Resources
 
 - [John Patitucci Official](https://johnpatitucci.com/)
-- [Linear Arpeggios Explained (YouTube)](https://www.youtube.com/results?search_query=john+patitucci+linear+arpeggios)
+- [Victor Wooten Official](https://victorwooten.com/)
 - [Web Audio API Docs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 
 ## 📄 License
@@ -179,6 +190,6 @@ MIT © 2026
 
 **Made with ❤️ for bass players**
 
-**Bass Academy · 2026**
+**Bass Academy · 2026 · v2.1.0**
 
 </div>
