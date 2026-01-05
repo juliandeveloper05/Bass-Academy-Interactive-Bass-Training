@@ -9,12 +9,12 @@ import MeasureGuide from './MeasureGuide.jsx';
 import { STRING_ORDER } from '../../config/audioConfig.js';
 
 function TablatureDesktop({ 
-  tabData, 
-  currentNoteIndex, 
-  selectedRoot, 
-  selectedPattern, 
-  secondRoot, 
-  secondPattern 
+  tabData = [], 
+  currentNoteIndex = -1, 
+  selectedRoot = 'E', 
+  selectedPattern = 'linear11thsMaj', 
+  secondRoot = 'A', 
+  secondPattern = 'linear11thsMin' 
 }) {
   return (
     <div className="hidden md:block p-8 overflow-x-auto">

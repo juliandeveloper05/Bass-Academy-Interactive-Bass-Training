@@ -8,7 +8,7 @@
  * - Stale While Revalidate: Images and media
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v2.0.0';
 const CACHE_NAME = `bass-academy-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `bass-academy-runtime-${CACHE_VERSION}`;
 

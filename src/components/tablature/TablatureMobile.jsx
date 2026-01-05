@@ -10,12 +10,12 @@ import MeasureGuide from './MeasureGuide.jsx';
 import { STRING_ORDER } from '../../config/audioConfig.js';
 
 function TablatureMobile({ 
-  tabData, 
-  currentNoteIndex, 
-  selectedRoot, 
-  selectedPattern, 
-  secondRoot, 
-  secondPattern 
+  tabData = [], 
+  currentNoteIndex = -1, 
+  selectedRoot = 'E', 
+  selectedPattern = 'linear11thsMaj', 
+  secondRoot = 'A', 
+  secondPattern = 'linear11thsMin' 
 }) {
   // Split notes into two measures (0-11 and 12-23)
   const measure1Notes = tabData.slice(0, 12);

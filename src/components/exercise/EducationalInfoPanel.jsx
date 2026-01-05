@@ -7,7 +7,13 @@ import React from 'react';
 import { BookOpen, Zap, Target } from 'lucide-react';
 import { PATTERNS, formatNoteName } from '../../data/exerciseLibrary.js';
 
-function EducationalInfoPanel({ selectedRoot, selectedPattern, secondRoot, secondPattern }) {
+function EducationalInfoPanel({ selectedRoot = 'E', selectedPattern = 'linear11thsMaj', secondRoot = 'A', secondPattern = 'linear11thsMin' }) {
+  // Defensive: Ensure we have valid values
+  const root1 = selectedRoot || 'E';
+  const root2 = secondRoot || 'A';
+  const pattern1 = PATTERNS[selectedPattern] || PATTERNS['linear11thsMaj'];
+  const pattern2 = PATTERNS[secondPattern] || PATTERNS['linear11thsMin'];
+  
   return (
     <div className="hidden sm:block glass-strong rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 animate-fadeInUp" style={{animationDelay: "0.1s"}}>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
@@ -32,7 +38,7 @@ function EducationalInfoPanel({ selectedRoot, selectedPattern, secondRoot, secon
           <div>
             <h3 className="font-semibold text-[var(--color-cream)] mb-1 text-sm sm:text-base">Chords</h3>
             <p className="text-xs sm:text-sm text-[var(--color-primary-light)]">
-              <span className="font-mono text-[var(--color-gold)]">{formatNoteName(selectedRoot)}{PATTERNS[selectedPattern]?.name}</span> → <span className="font-mono text-[var(--color-gold)]">{formatNoteName(secondRoot)}{PATTERNS[secondPattern]?.name}</span>
+              <span className="font-mono text-[var(--color-gold)]">{formatNoteName(root1)}{pattern1?.name || ''}</span> → <span className="font-mono text-[var(--color-gold)]">{formatNoteName(root2)}{pattern2?.name || ''}</span>
             </p>
           </div>
         </div>
@@ -55,3 +61,4 @@ function EducationalInfoPanel({ selectedRoot, selectedPattern, secondRoot, secon
 }
 
 export default EducationalInfoPanel;
+

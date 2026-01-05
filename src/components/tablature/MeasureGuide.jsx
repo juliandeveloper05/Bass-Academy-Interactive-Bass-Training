@@ -8,19 +8,24 @@ import { ChevronRight } from 'lucide-react';
 import { PATTERNS, formatNoteName } from '../../data/exerciseLibrary.js';
 
 function MeasureGuide({ 
-  selectedRoot, 
-  selectedPattern, 
-  secondRoot, 
-  secondPattern, 
+  selectedRoot = 'E', 
+  selectedPattern = 'linear11thsMaj', 
+  secondRoot = 'A', 
+  secondPattern = 'linear11thsMin', 
   variant = 'desktop' 
 }) {
+  // Defensive: Ensure we have valid values
+  const root1 = selectedRoot || 'E';
+  const root2 = secondRoot || 'A';
+  const pattern1Name = PATTERNS[selectedPattern]?.name || '';
+  const pattern2Name = PATTERNS[secondPattern]?.name || '';
   if (variant === 'desktop') {
     return (
       <div className="flex pl-14 mt-6 gap-4">
         <div className="flex-1 glass rounded-xl p-3 text-center border-l-4 border-[var(--color-gold)]">
           <p className="text-xs uppercase tracking-wider text-[var(--color-primary-light)] mb-1">Measure 1</p>
           <p className="font-mono font-bold text-[var(--color-gold)]">
-            {formatNoteName(selectedRoot)}{PATTERNS[selectedPattern]?.name}
+            {formatNoteName(root1)}{pattern1Name}
           </p>
         </div>
         <div className="w-8 flex items-center justify-center">
@@ -29,7 +34,7 @@ function MeasureGuide({
         <div className="flex-1 glass rounded-xl p-3 text-center border-l-4 border-[var(--color-info)]">
           <p className="text-xs uppercase tracking-wider text-[var(--color-primary-light)] mb-1">Measure 2</p>
           <p className="font-mono font-bold text-[var(--color-info)]">
-            {formatNoteName(secondRoot)}{PATTERNS[secondPattern]?.name}
+            {formatNoteName(root2)}{pattern2Name}
           </p>
         </div>
       </div>
@@ -43,8 +48,8 @@ function MeasureGuide({
         <div className={`w-1.5 h-6 rounded-full ${variant === 'measure1' ? 'bg-[var(--color-gold)]' : 'bg-[var(--color-info)]'}`} />
         <span className={`font-mono font-bold text-base sm:text-lg ${variant === 'measure1' ? 'text-[var(--color-gold)]' : 'text-[var(--color-info)]'}`}>
           {variant === 'measure1' 
-            ? `${formatNoteName(selectedRoot)}${PATTERNS[selectedPattern]?.name}`
-            : `${formatNoteName(secondRoot)}${PATTERNS[secondPattern]?.name}`
+            ? `${formatNoteName(root1)}${pattern1Name}`
+            : `${formatNoteName(root2)}${pattern2Name}`
           }
         </span>
       </div>
