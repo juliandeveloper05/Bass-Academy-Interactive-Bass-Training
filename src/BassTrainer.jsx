@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Music, AlertCircle, Guitar, List, ArrowLeft } from "lucide-react";
+import { Music, AlertCircle, Guitar, List, ArrowLeft, Maximize2 } from "lucide-react";
 
 // Components - Layout
 import Header from "./components/layout/Header.jsx";
@@ -19,6 +19,7 @@ import EducationalInfoPanel from "./components/exercise/EducationalInfoPanel.jsx
 import TablatureDesktop from "./components/tablature/TablatureDesktop.jsx";
 import TablatureMobile from "./components/tablature/TablatureMobile.jsx";
 import FretboardView from "./components/FretboardView.jsx";
+import FullscreenTablature from "./components/tablature/FullscreenTablature.jsx";
 
 // Components - Player
 import ControlPanel from "./components/player/ControlPanel.jsx";
@@ -65,6 +66,7 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
   const audio = useBassAudio();
   
   const [viewMode, setViewMode] = useState(VIEW_MODES.TAB);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   // Exercise State - Initialize safe defaults
   const [exerciseState, setExerciseState] = useState(() => {
@@ -259,6 +261,14 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
               <div className="flex items-center gap-1 sm:gap-2">
                 <button onClick={() => setViewMode(VIEW_MODES.TAB)} className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all ${viewMode === VIEW_MODES.TAB ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]' : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)]'}`}>Tab</button>
                 <button onClick={() => setViewMode(VIEW_MODES.FRETBOARD)} className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all ${viewMode === VIEW_MODES.FRETBOARD ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]' : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)]'}`}>Diapasón</button>
+                <button 
+                  onClick={() => setIsFullscreen(true)}
+                  className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg text-[10px] sm:text-xs font-medium transition-all bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] hover:bg-[var(--color-gold)] hover:text-[var(--color-primary-deep)] flex items-center gap-1"
+                  aria-label="Modo pantalla completa"
+                  title="Pantalla completa"
+                >
+                  <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </button>
               </div>
             </div>
           </div>
@@ -294,6 +304,28 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
 
         <Footer />
       </div>
+
+      {/* Fullscreen Tablature Mode */}
+      {isFullscreen && (
+        <FullscreenTablature
+          tabData={tabData}
+          currentNoteIndex={currentNoteIndex}
+          selectedRoot={selectedRoot}
+          selectedPattern={selectedPattern}
+          secondRoot={secondRoot}
+          secondPattern={secondPattern}
+          isPlaying={isPlaying}
+          tempo={tempo}
+          onPlayPause={isPlaying || isCountingDown ? handleStop : handlePlay}
+          onTempoChange={actions.setTempo}
+          bassVolume={playerState.bassVolume}
+          onBassVolumeChange={handleBassVolume}
+          metronomeVolume={playerState.metronomeVolume}
+          onMetronomeVolumeChange={handleMetronomeVolume}
+          viewMode={viewMode}
+          onClose={() => setIsFullscreen(false)}
+        />
+      )}
     </div>
   );
 };
