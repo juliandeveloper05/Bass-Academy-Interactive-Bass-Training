@@ -334,6 +334,8 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
           metronomeVolume={playerState.metronomeVolume}
           onMetronomeVolumeChange={handleMetronomeVolume}
           viewMode={viewMode}
+          onRootChange={setSelectedRoot}
+          onSecondRootChange={setSecondRoot}
           onClose={() => setIsFullscreen(false)}
         />
       )}

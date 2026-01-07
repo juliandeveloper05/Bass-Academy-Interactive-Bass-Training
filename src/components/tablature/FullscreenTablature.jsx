@@ -10,7 +10,9 @@ import ProgressBar from './ProgressBar';
 import TablatureDesktop from './TablatureDesktop';
 import TablatureMobile from './TablatureMobile';
 import FretboardView from '../FretboardView';
+import RootNotePopup from './RootNotePopup';
 import { VIEW_MODES } from '../../config/uiConfig';
+import { PATTERNS, formatNoteName } from '../../data/exerciseLibrary.js';
 import './FullscreenTablature.css';
 
 const FullscreenTablature = ({
@@ -39,12 +41,17 @@ const FullscreenTablature = ({
   // View mode
   viewMode = VIEW_MODES.TAB,
   
+  // Root note change handlers
+  onRootChange,
+  onSecondRootChange,
+  
   // Close handler
   onClose,
 }) => {
   const containerRef = useRef(null);
   const { enterFullscreen, exitFullscreen, isSupported } = useFullscreen();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [popupState, setPopupState] = useState({ isOpen: false, measureNumber: null });
 
   // Detect mobile on resize
   useEffect(() => {
@@ -88,8 +95,26 @@ const FullscreenTablature = ({
   // Get pattern display names
   const getPatternShortName = (patternId) => {
     if (!patternId) return '';
-    // Extract meaningful part from pattern ID
-    return patternId.replace(/([A-Z])/g, ' $1').trim().substring(0, 15);
+    return PATTERNS[patternId]?.name || patternId.replace(/([A-Z])/g, ' $1').trim().substring(0, 15);
+  };
+
+  // Handle measure click to open root note selector
+  const handleMeasureClick = (measureNumber) => {
+    setPopupState({ isOpen: true, measureNumber });
+  };
+
+  // Handle root note selection from popup
+  const handleRootSelect = (note) => {
+    if (popupState.measureNumber === 1 && onRootChange) {
+      onRootChange(note);
+    } else if (popupState.measureNumber === 2 && onSecondRootChange) {
+      onSecondRootChange(note);
+    }
+  };
+
+  // Close popup
+  const closePopup = () => {
+    setPopupState({ isOpen: false, measureNumber: null });
   };
 
   return (
@@ -154,6 +179,31 @@ const FullscreenTablature = ({
             isPlaying={isPlaying}
           />
         )}
+
+        {/* Clickable Measure Selectors */}
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            onClick={() => handleMeasureClick(1)}
+            className="fullscreen-measure-button glass px-4 py-3 border-l-4 border-[var(--color-gold)] text-center min-w-[180px]"
+            aria-label="Change Measure 1 root note"
+          >
+            <p className="text-xs uppercase tracking-wider text-[var(--color-primary-light)] mb-1">Measure 1</p>
+            <p className="font-mono font-bold text-[var(--color-gold)]">
+              {formatNoteName(selectedRoot)}{getPatternShortName(selectedPattern)}
+            </p>
+          </button>
+          <span className="flex items-center text-[var(--color-primary-medium)]">&gt;</span>
+          <button
+            onClick={() => handleMeasureClick(2)}
+            className="fullscreen-measure-button glass px-4 py-3 border-l-4 border-[var(--color-info)] text-center min-w-[180px]"
+            aria-label="Change Measure 2 root note"
+          >
+            <p className="text-xs uppercase tracking-wider text-[var(--color-primary-light)] mb-1">Measure 2</p>
+            <p className="font-mono font-bold text-[var(--color-info)]">
+              {formatNoteName(secondRoot)}{getPatternShortName(secondPattern)}
+            </p>
+          </button>
+        </div>
       </div>
 
       {/* Controles de reproducción */}
@@ -218,6 +268,15 @@ const FullscreenTablature = ({
         <span>Espacio: Play/Stop</span>
         <span>ESC: Salir</span>
       </div>
+
+      {/* Root Note Popup */}
+      <RootNotePopup
+        isOpen={popupState.isOpen}
+        onClose={closePopup}
+        onSelect={handleRootSelect}
+        currentRoot={popupState.measureNumber === 1 ? selectedRoot : secondRoot}
+        measureNumber={popupState.measureNumber || 1}
+      />
     </div>
   );
 };
