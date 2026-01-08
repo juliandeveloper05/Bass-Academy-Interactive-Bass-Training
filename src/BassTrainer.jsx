@@ -48,12 +48,15 @@ import {
   getPatternsByCategory 
 } from "./data/exerciseLibrary.js";
 
+// Custom exercises
+import { generateCustomTabData } from "./data/customExerciseLibrary.js";
+
 // Stats
 import StatsModal from "./components/stats/StatsModal.jsx";
 
 const EXERCISE_STORAGE_KEY = 'bass-trainer-exercise-state';
 
-const BassTrainer = ({ selectedCategory, onBack }) => {
+const BassTrainer = ({ selectedCategory, customExerciseConfig, onBack }) => {
   // PWA Hook
   const {
     isInstallable,
@@ -78,7 +81,19 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
   
   // Exercise State - Initialize safe defaults
   const [exerciseState, setExerciseState] = useState(() => {
-    // Priority 1: If an artist was selected from Home, try to load their first pattern
+    // Priority 1: If a custom exercise was provided
+    if (customExerciseConfig?.isCustom) {
+      return {
+        patternId: customExerciseConfig.patternId,
+        rootNote: customExerciseConfig.rootNote || 'E',
+        secondPatternId: customExerciseConfig.secondPatternId,
+        secondRootNote: customExerciseConfig.secondRootNote || 'E',
+        isCustom: true,
+        customData: customExerciseConfig.customData,
+      };
+    }
+
+    // Priority 2: If an artist was selected from Home, try to load their first pattern
     if (selectedCategory) {
       const patterns = getPatternsByCategory()[selectedCategory];
       if (patterns && patterns.length > 0) {
@@ -86,19 +101,20 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
           patternId: patterns[0].id,
           rootNote: 'E',
           secondPatternId: patterns.length > 1 ? patterns[1].id : patterns[0].id,
-          secondRootNote: 'A'
+          secondRootNote: 'A',
+          isCustom: false,
         };
       }
     }
 
-    // Priority 2: Load from storage if valid
+    // Priority 3: Load from storage if valid
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem(EXERCISE_STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed.patternId && PATTERNS[parsed.patternId]) {
-            return parsed;
+            return { ...parsed, isCustom: false };
           }
         }
       } catch (e) {
@@ -106,7 +122,7 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
       }
     }
     
-    return DEFAULT_EXERCISE;
+    return { ...DEFAULT_EXERCISE, isCustom: false };
   });
 
   // Effect: Update exercises if category changes externally
@@ -156,12 +172,28 @@ const BassTrainer = ({ selectedCategory, onBack }) => {
   const countdownTimeoutsRef = useRef([]);
 
   const tabData = useMemo(() => {
+    // If custom exercise, generate from custom data
+    if (exerciseState.isCustom && exerciseState.customData) {
+      return generateCustomTabData(exerciseState.customData);
+    }
+    // Standard pattern generation
     const measure1 = generateTabData(selectedPattern, selectedRoot);
     const measure2 = generateTabData(secondPattern, secondRoot);
     return [...measure1, ...measure2.map((note, idx) => ({ ...note, id: measure1.length + idx }))];
-  }, [selectedPattern, selectedRoot, secondPattern, secondRoot]);
+  }, [selectedPattern, selectedRoot, secondPattern, secondRoot, exerciseState.isCustom, exerciseState.customData]);
 
-  const headerInfo = useMemo(() => getHeaderInfo(selectedPattern, secondPattern), [selectedPattern, secondPattern]);
+  const headerInfo = useMemo(() => {
+    // If custom exercise, return custom info
+    if (exerciseState.isCustom && exerciseState.customData) {
+      return {
+        displayName: exerciseState.customData.name,
+        subtitle: 'Custom Exercise',
+        type: 'custom',
+        difficulty: exerciseState.customData.difficulty,
+      };
+    }
+    return getHeaderInfo(selectedPattern, secondPattern);
+  }, [selectedPattern, secondPattern, exerciseState.isCustom, exerciseState.customData]);
 
   const scheduler = useAudioScheduler({ audio, notes: tabData, playerState, actions });
 

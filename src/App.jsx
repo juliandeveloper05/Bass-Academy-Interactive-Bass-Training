@@ -1,9 +1,10 @@
 import React, { useState, Component } from 'react';
 import HomeScreen from './components/HomeScreen';
 import BassTrainer from './BassTrainer';
+import CustomBuilderRouter from './components/builder/CustomBuilderRouter';
 import './App.css';
 
-// Error Boundary para capturar errores en BassTrainer
+// Error Boundary para capturar errores
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -29,8 +30,8 @@ class ErrorBoundary extends Component {
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif'
         }}>
-          <h1 style={{ color: '#EF4444' }}>❌ Error en BassTrainer</h1>
-          <p style={{ color: '#C9A554' }}>Algo salió mal al cargar el entrenador.</p>
+          <h1 style={{ color: '#EF4444' }}>❌ Error en la aplicación</h1>
+          <p style={{ color: '#C9A554' }}>Algo salió mal.</p>
           <pre style={{ 
             background: '#0D1B2A', 
             padding: '20px', 
@@ -66,34 +67,69 @@ class ErrorBoundary extends Component {
 }
 
 const App = () => {
-  // Estado para controlar qué pantalla vemos
-  // 'home' = Pantalla de artistas
-  // 'trainer' = Pantalla de práctica
+  // Navigation states
   const [currentScreen, setCurrentScreen] = useState('home');
   const [selectedArtist, setSelectedArtist] = useState(null);
+  const [customExerciseConfig, setCustomExerciseConfig] = useState(null);
 
-  // Función para ir al entrenador con un artista específico
+  /**
+   * Navigate to trainer with specific artist
+   */
   const handleArtistSelect = (artistId) => {
-    console.log("Artista seleccionado:", artistId); 
+    console.log("Artista seleccionado:", artistId);
     setSelectedArtist(artistId);
+    setCustomExerciseConfig(null);
     setCurrentScreen('trainer');
   };
 
-  // Función para volver al inicio
+  /**
+   * Navigate to Custom Builder
+   */
+  const handleCustomBuilderSelect = () => {
+    console.log("Navegando a Custom Builder");
+    setCurrentScreen('customBuilder');
+  };
+
+  /**
+   * Navigate to trainer with custom exercise
+   */
+  const handlePlayCustomExercise = (exerciseConfig) => {
+    console.log("Playing custom exercise:", exerciseConfig);
+    setCustomExerciseConfig(exerciseConfig);
+    setSelectedArtist(null);
+    setCurrentScreen('trainer');
+  };
+
+  /**
+   * Go back to home
+   */
   const handleBack = () => {
     setCurrentScreen('home');
     setSelectedArtist(null);
+    setCustomExerciseConfig(null);
   };
 
+  // Render current screen
   return (
     <div className="app-container">
       {currentScreen === 'home' ? (
-        <HomeScreen onSelectArtist={handleArtistSelect} />
+        <HomeScreen 
+          onSelectArtist={handleArtistSelect}
+          onSelectCustomBuilder={handleCustomBuilderSelect}
+        />
+      ) : currentScreen === 'customBuilder' ? (
+        <ErrorBoundary>
+          <CustomBuilderRouter
+            onBack={handleBack}
+            onPlayExercise={handlePlayCustomExercise}
+          />
+        </ErrorBoundary>
       ) : (
         <ErrorBoundary>
           <BassTrainer 
-            selectedCategory={selectedArtist} 
-            onBack={handleBack} 
+            selectedCategory={selectedArtist}
+            customExerciseConfig={customExerciseConfig}
+            onBack={handleBack}
           />
         </ErrorBoundary>
       )}
