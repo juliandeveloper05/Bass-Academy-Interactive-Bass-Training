@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/Version-2.3.1-C9A554?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.3.2-C9A554?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
@@ -65,14 +65,15 @@ Bass Academy addresses a critical gap in the music education technology market: 
 3. **Partnership Potential** — Licensing with music schools, YouTube creators
 4. **Mobile Apps** — Capacitor/React Native wrapper for App Store presence
 
-## 🆕 What's New in v2.3.1
+## 🆕 What's New in v2.3.2
 
-- 🎨 **Custom Exercise Builder** - Create your own exercises note-by-note with visual fretboard editor
-- 🎸 **Interactive Fretboard Editor** - Tap on the 4-string fretboard to add notes in sequence
-- 💾 **Save & Manage Exercises** - Save, edit, duplicate, and delete your custom exercises
-- 📤 **Import/Export JSON** - Share exercises with other users via JSON files
-- 🔍 **Search & Filter** - Find exercises by name or difficulty level
-- 🎵 **Technique Selection** - Choose from Normal, Slap, Pop, Hammer-On, and Mute techniques
+- 🎙️ **Audio Recording System** - Record your practice sessions for self-review
+- 🥁 **Recording Metronome** - Built-in hi-hat metronome with pre-roll countdown
+- 📝 **Editable Recording Metadata** - Customize name, BPM, key, and notes before saving
+- 🌊 **Real Waveform Visualization** - See actual audio waveforms from your recordings
+- 🎚️ **Live Mic Level Indicator** - Visual feedback showing microphone input levels
+- 📚 **Recording Library** - Save, rate, and manage multiple recordings with IndexedDB storage
+- 🔊 **Recording Playback** - Full-featured player with seek, volume, and waveform display
 
 ## ✨ Features
 
@@ -89,6 +90,7 @@ Bass Academy addresses a critical gap in the music education technology market: 
 | 🥁 **Metronome** | Beat indicator with triplet subdivisions |
 | ⏱️ **Tempo Control** | Adjustable BPM from 40-160 |
 | 🔄 **Loop Mode** | Continuous practice without interruption |
+| 🎙️ **Recording Studio** | Record, playback, and review your practice sessions |
 | 🌓 **Dark/Light Theme** | Toggle between themes with persistence |
 | 📱 **Responsive Design** | Mobile-first design optimized for all screen sizes |
 | 📲 **PWA Support** | Install on any device for offline practice |
@@ -246,21 +248,22 @@ The app will be available at `http://localhost:5173`
 
 ## 🗺️ Roadmap
 
-### ✅ Completed (v2.3.1)
+### ✅ Completed (v2.3.2)
+- [x] **Audio Recording System** with waveform visualization
+- [x] **Recording Metronome** with hi-hat sound and pre-roll countdown
+- [x] **Editable Recording Metadata** (name, BPM, key, notes)
+- [x] **Recording Library** with IndexedDB storage
 - [x] **Custom Exercise Builder** with visual fretboard editor
 - [x] **Exercise import/export** as JSON files
 - [x] **Technique selection** per note (Slap, Pop, Hammer, etc.)
 - [x] **Fullscreen practice mode** with integrated controls
 - [x] **Keyboard shortcuts** (Space: play/pause, ESC: exit)
 - [x] **Mobile landscape optimization** for practice sessions
-- [x] **Artist selection home screen**
 - [x] **Multi-artist exercise library** (Patitucci, Wooten, Flea, Jaco)
-- [x] **Practice session statistics**
-- [x] **Progress tracking with LocalStorage**
 
 ### 🔜 Upcoming (v2.4.0)
 - [ ] Scale patterns (Major, Minor, Modes)
-- [ ] Audio recording for self-review
+- [ ] Audio mixing (mic + exercise audio)
 - [ ] Community exercise sharing
 - [ ] Exercise collections/folders
 
@@ -304,6 +307,6 @@ MIT © 2026 Julian Javier Soto
 
 **Made with ❤️ for bass players by [Julian Soto](https://github.com/juliandeveloper05)**
 
-**Bass Academy · 2026 · v2.3.1**
+**Bass Academy · 2026 · v2.3.2**
 
 </div>
