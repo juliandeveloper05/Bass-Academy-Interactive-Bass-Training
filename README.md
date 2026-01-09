@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/Version-2.3.0-C9A554?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.3.1-C9A554?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6.3-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
@@ -21,19 +21,65 @@ A comprehensive bass practice platform featuring a **selectable exercise library
 
 Practice arpeggios, scales, and patterns with real-time tablature, fretboard visualization, and Web Audio synthesis - all transposable to any key.
 
-## 🆕 What's New in v2.3.0
+## 💼 Executive Summary
 
-- 🔍 **Fullscreen Practice Mode** - Immersive tablature view with integrated controls
-- 🎚️ **In-Fullscreen Controls** - Play/Stop, Tempo, and Volume sliders in fullscreen
-- ⌨️ **Keyboard Shortcuts** - Space for Play/Pause, ESC to exit fullscreen
-- 📱 **Mobile Landscape Optimized** - Perfect for horizontal phone/tablet practice
-- 🌐 **Cross-Browser Fullscreen API** - Works on Chrome, Firefox, Safari, Edge
+### Value Proposition
+
+Bass Academy addresses a critical gap in the music education technology market: **interactive, structured bass guitar training with artist-specific techniques**. Unlike generic tab readers or passive video tutorials, this platform provides:
+
+- **Active Learning** — Real-time feedback with synchronized audio/visual playback
+- **Curriculum Structure** — Exercises curated from world-class bassists' signature techniques
+- **Progressive Difficulty** — Patterns range from beginner (★★☆) to expert (★★★★★)
+- **User-Generated Content** — Custom Exercise Builder enables infinite scalability
+
+### Target Audience
+
+| Segment | Use Case | Value Driver |
+|---------|----------|--------------|
+| **Students** | Structured practice routines | Artist-specific curriculum |
+| **Teachers** | Lesson material creation | Custom builder + JSON export |
+| **Hobbyists** | Self-paced skill development | Mobile-first PWA, offline support |
+| **Professionals** | Technique refinement | High-difficulty patterns |
+
+### Technical Differentiators
+
+| Capability | Competitive Advantage |
+|------------|----------------------|
+| **PWA Architecture** | Offline-first, installable on any device |
+| **Web Audio API** | Low-latency audio synthesis, no server dependency |
+| **Custom Exercise Builder** | User-generated content ecosystem potential |
+| **Open JSON Format** | Exercises shareable, not locked to platform |
+| **React 19 + Vite 6** | Modern stack, excellent DX and performance |
+
+### Metrics & Scalability
+
+- **Bundle Size:** 318 KB main JS (gzip: 87 KB) — optimized for mobile networks
+- **Build Time:** ~42s production build — fast CI/CD cycles
+- **Zero Backend Dependency:** All features work client-side with LocalStorage
+- **PWA Ready:** Service worker with cache management for offline reliability
+
+### Growth Opportunities
+
+1. **Community Features** — Exercise sharing, ratings, user profiles
+2. **Subscription Model** — Premium artist packs, advanced analytics
+3. **Partnership Potential** — Licensing with music schools, YouTube creators
+4. **Mobile Apps** — Capacitor/React Native wrapper for App Store presence
+
+## 🆕 What's New in v2.3.1
+
+- 🎨 **Custom Exercise Builder** - Create your own exercises note-by-note with visual fretboard editor
+- 🎸 **Interactive Fretboard Editor** - Tap on the 4-string fretboard to add notes in sequence
+- 💾 **Save & Manage Exercises** - Save, edit, duplicate, and delete your custom exercises
+- 📤 **Import/Export JSON** - Share exercises with other users via JSON files
+- 🔍 **Search & Filter** - Find exercises by name or difficulty level
+- 🎵 **Technique Selection** - Choose from Normal, Slap, Pop, Hammer-On, and Mute techniques
 
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
 | 🏠 **Artist Home Screen** | Select from legendary bassists to access their specific exercises |
+| 🎨 **Custom Exercise Builder** | Create your own exercises with visual fretboard editor |
 | 📚 **Exercise Library** | 10+ patterns: Linear 11ths, Double Thumb, Slap, Ghost Notes, and more |
 | 🔍 **Fullscreen Practice Mode** | Immersive view with integrated Play/Stop, Tempo, and Volume controls |
 | 🎹 **Root Transposition** | Practice any pattern in all 12 chromatic keys |
@@ -46,6 +92,20 @@ Practice arpeggios, scales, and patterns with real-time tablature, fretboard vis
 | 🌓 **Dark/Light Theme** | Toggle between themes with persistence |
 | 📱 **Responsive Design** | Mobile-first design optimized for all screen sizes |
 | 📲 **PWA Support** | Install on any device for offline practice |
+
+## 🎨 Custom Exercise Builder
+
+Create personalized bass exercises with the new visual builder:
+
+| Feature | Description |
+|---------|-------------|
+| 🎸 **Visual Fretboard** | Interactive 4-string × 13-fret grid (E, A, D, G strings) |
+| 👆 **Tap to Add** | Simply tap any fret position to add notes to your sequence |
+| 🎵 **Technique Selector** | Choose technique per note: Normal, Slap, Pop, Hammer, Mute |
+| ⚙️ **Metadata Editor** | Set name, description, difficulty, and suggested tempo |
+| 💾 **Auto-Save** | Drafts saved automatically every 30 seconds |
+| 📤 **Export/Import** | Share exercises as `.bass.json` files |
+| ▶️ **Preview Mode** | Test your exercise in BassTrainer before saving |
 
 ## 🎸 Artist Techniques
 
@@ -91,6 +151,10 @@ This project follows modern React architecture patterns for maintainability and 
 ```
 src/
 ├── components/
+│   ├── builder/          # Custom Exercise Builder components
+│   │   ├── CustomBuilderHub.jsx       # Exercise list & management
+│   │   ├── VisualFretboardEditor.jsx  # Interactive fretboard editor
+│   │   └── CustomBuilderRouter.jsx    # Builder navigation
 │   ├── layout/           # Header, CountdownOverlay, Footer
 │   ├── player/           # ControlPanel, BeatIndicator, PlaybackControls
 │   ├── tablature/        # TabNote, TabString, MeasureGuide, Desktop/Mobile
@@ -103,13 +167,15 @@ src/
 │   ├── useFullscreen.js      # Cross-browser Fullscreen API
 │   └── usePWA.js             # PWA installation & updates
 ├── services/
-│   └── AudioService.js       # Pure JS audio synthesis
+│   ├── AudioService.js           # Pure JS audio synthesis
+│   └── CustomExerciseManager.js  # Custom exercise CRUD & storage
 ├── config/
 │   ├── audioConfig.js        # Audio constants & settings
 │   └── uiConfig.js           # UI constants & settings
 ├── data/
-│   └── exerciseLibrary.js    # Patterns, categories & generation
-├── App.jsx                   # Router between Home & Trainer
+│   ├── exerciseLibrary.js        # Patterns, categories & generation
+│   └── customExerciseLibrary.js  # Custom exercise helpers
+├── App.jsx                   # Router between Home, Builder & Trainer
 └── BassTrainer.jsx           # Exercise trainer component
 ```
 
@@ -119,7 +185,7 @@ src/
 |---------|----------------|
 | **Finite State Machine** | Player states (IDLE → COUNTDOWN → PLAYING ↔ PAUSED) |
 | **Reducer Pattern** | Centralized state management via `useReducer` |
-| **Service Pattern** | `AudioService` class - pure JS, testable |
+| **Service Pattern** | `AudioService` & `CustomExerciseManager` - pure JS, testable |
 | **Composition** | Granular components (TabNote → TabString → TablatureView) |
 | **Config Centralization** | All constants in `/config` |
 
@@ -149,31 +215,28 @@ The app will be available at `http://localhost:5173`
 - **Icons:** Lucide React
 - **Audio:** Web Audio API
 - **State:** useReducer + Finite State Machine
+- **Storage:** LocalStorage for exercises & preferences
 - **PWA:** Service Worker with Cache Management
 
 ## 🗺️ Roadmap
 
-### ✅ Completed (v2.3.0)
+### ✅ Completed (v2.3.1)
+- [x] **Custom Exercise Builder** with visual fretboard editor
+- [x] **Exercise import/export** as JSON files
+- [x] **Technique selection** per note (Slap, Pop, Hammer, etc.)
 - [x] **Fullscreen practice mode** with integrated controls
 - [x] **Keyboard shortcuts** (Space: play/pause, ESC: exit)
 - [x] **Mobile landscape optimization** for practice sessions
-- [x] **Cross-browser Fullscreen API** support
 - [x] **Artist selection home screen**
 - [x] **Multi-artist exercise library** (Patitucci, Wooten, Flea, Jaco)
-- [x] **Improved responsive design** for mobile
-- [x] Exercise library with selectable patterns
-- [x] Root note transposition (12 keys)
-- [x] Metronome with triplet subdivisions
-- [x] Fretboard visualization mode
-- [x] Light/Dark theme toggle
-- [x] PWA support with offline use
+- [x] **Practice session statistics**
+- [x] **Progress tracking with LocalStorage**
 
 ### 🔜 Upcoming (v2.4.0)
 - [ ] Scale patterns (Major, Minor, Modes)
-- [x] Practice session statistics
-- [x] Progress tracking with LocalStorage
-- [ ] Custom exercise builder
 - [ ] Audio recording for self-review
+- [ ] Community exercise sharing
+- [ ] Exercise collections/folders
 
 ## 🎓 Resources
 
@@ -191,6 +254,6 @@ MIT © 2026
 
 **Made with ❤️ for bass players**
 
-**Bass Academy · 2026 · v2.3.0**
+**Bass Academy · 2026 · v2.3.1**
 
 </div>
