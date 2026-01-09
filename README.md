@@ -189,7 +189,33 @@ src/
 | **Composition** | Granular components (TabNote → TabString → TablatureView) |
 | **Config Centralization** | All constants in `/config` |
 
-## 🚀 Installation
+## 🌐 Try It Now
+
+**Live Demo:** [bass-academy-interactive-bass-training.vercel.app](https://bass-academy-interactive-bass-training.vercel.app)
+
+No installation required — works directly in your browser!
+
+### 📲 Install as PWA (Recommended)
+
+Bass Academy works offline as a Progressive Web App. Install it on any device:
+
+| Platform | How to Install |
+|----------|----------------|
+| **Chrome (Desktop)** | Click the install icon (⊕) in the address bar → "Install" |
+| **Chrome (Android)** | Menu (⋮) → "Add to Home screen" or "Install app" |
+| **Safari (iOS)** | Share button (↑) → "Add to Home Screen" |
+| **Edge** | Click (⊕) in address bar → "Install" |
+| **Firefox** | Not supported natively, use as web app |
+
+**Benefits of PWA installation:**
+- ✅ Works offline — practice without internet
+- ✅ Launches like a native app
+- ✅ No app store needed
+- ✅ Always up-to-date
+
+---
+
+## 🚀 Local Development
 
 ```bash
 # Clone the repository
