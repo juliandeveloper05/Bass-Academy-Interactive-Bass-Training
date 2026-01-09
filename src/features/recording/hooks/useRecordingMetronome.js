@@ -15,21 +15,12 @@ const DEFAULT_CONFIG = {
   tempo: 100,
   timeSignature: 4, // beats per bar
   preRollBars: 1,   // bars before recording starts
-  accentFirst: true,
 };
 
 // ============================================
 // HOOK: useRecordingMetronome
 // ============================================
 
-/**
- * Metronome hook with hi-hat sound synthesis
- * 
- * @param {Object} options
- * @param {number} options.initialTempo - Starting tempo
- * @param {Function} options.onPreRollComplete - Called when pre-roll finishes
- * @returns {Object} Metronome state and controls
- */
 export function useRecordingMetronome({
   initialTempo = DEFAULT_CONFIG.tempo,
   onPreRollComplete = null,
@@ -45,21 +36,36 @@ export function useRecordingMetronome({
   const [currentBeat, setCurrentBeat] = useState(0);
   const [preRollBeat, setPreRollBeat] = useState(0);
   
-  // Refs for timing
+  // Refs for timing (these are the source of truth during scheduling)
   const audioContextRef = useRef(null);
-  const nextBeatTimeRef = useRef(0);
   const timerIdRef = useRef(null);
+  const isPlayingRef = useRef(false);
+  const isPreRollRef = useRef(false);
   const beatCountRef = useRef(0);
   const preRollCountRef = useRef(0);
+  const tempoRef = useRef(tempo);
+  const timeSignatureRef = useRef(timeSignature);
+  const onPreRollCompleteRef = useRef(onPreRollComplete);
+  
+  // Keep refs in sync with state
+  useEffect(() => { tempoRef.current = tempo; }, [tempo]);
+  useEffect(() => { timeSignatureRef.current = timeSignature; }, [timeSignature]);
+  useEffect(() => { onPreRollCompleteRef.current = onPreRollComplete; }, [onPreRollComplete]);
   
   // ============================================
   // AUDIO CONTEXT INIT
   // ============================================
   
-  const getAudioContext = useCallback(() => {
+  const getAudioContext = useCallback(async () => {
     if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
+    
+    // Resume if suspended (requires user gesture on some browsers)
+    if (audioContextRef.current.state === 'suspended') {
+      await audioContextRef.current.resume();
+    }
+    
     return audioContextRef.current;
   }, []);
   
@@ -67,21 +73,16 @@ export function useRecordingMetronome({
   // HI-HAT SOUND SYNTHESIS
   // ============================================
   
-  /**
-   * Generate hi-hat sound using noise + filter
-   * @param {boolean} isAccent - Louder accent on first beat
-   * @param {boolean} isPreRoll - Different sound during pre-roll
-   */
-  const playHiHat = useCallback((isAccent = false, isPreRoll = false) => {
-    const ctx = getAudioContext();
+  const playHiHat = useCallback((ctx, isAccent = false, isPreRollSound = false) => {
+    if (!ctx) return;
+    
     const time = ctx.currentTime;
     
     // Create noise source
-    const bufferSize = ctx.sampleRate * 0.1; // 100ms of noise
+    const bufferSize = ctx.sampleRate * 0.1;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     
-    // Fill with white noise
     for (let i = 0; i < bufferSize; i++) {
       data[i] = Math.random() * 2 - 1;
     }
@@ -89,119 +90,133 @@ export function useRecordingMetronome({
     const noise = ctx.createBufferSource();
     noise.buffer = buffer;
     
-    // High-pass filter for hi-hat character
+    // High-pass filter
     const highpass = ctx.createBiquadFilter();
     highpass.type = 'highpass';
-    highpass.frequency.value = isPreRoll ? 8000 : 6000;
+    highpass.frequency.value = isPreRollSound ? 8000 : 6000;
     highpass.Q.value = 1;
     
     // Bandpass for metallic sound
     const bandpass = ctx.createBiquadFilter();
     bandpass.type = 'bandpass';
-    bandpass.frequency.value = isPreRoll ? 12000 : 10000;
+    bandpass.frequency.value = isPreRollSound ? 12000 : 10000;
     bandpass.Q.value = 2;
     
-    // Envelope for decay
+    // Envelope
     const envelope = ctx.createGain();
-    const volume = isAccent ? 0.4 : 0.25;
-    const finalVolume = isPreRoll ? volume * 0.7 : volume;
+    const volume = isAccent ? 0.5 : 0.3;
+    const finalVolume = isPreRollSound ? volume * 0.8 : volume;
     
     envelope.gain.setValueAtTime(finalVolume, time);
-    envelope.gain.exponentialRampToValueAtTime(0.001, time + (isPreRoll ? 0.05 : 0.08));
+    envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
     
-    // Connect nodes
+    // Connect
     noise.connect(highpass);
     highpass.connect(bandpass);
     bandpass.connect(envelope);
     envelope.connect(ctx.destination);
     
-    // Play
     noise.start(time);
     noise.stop(time + 0.1);
-  }, [getAudioContext]);
+  }, []);
   
   // ============================================
-  // SCHEDULER
+  // SCHEDULER (using refs for real-time accuracy)
   // ============================================
   
-  const scheduleNextBeat = useCallback(() => {
-    const ctx = getAudioContext();
-    const secondsPerBeat = 60.0 / tempo;
+  const scheduleNextBeat = useCallback((ctx) => {
+    if (!isPlayingRef.current || !ctx) return;
     
-    // Look ahead 100ms
-    while (nextBeatTimeRef.current < ctx.currentTime + 0.1) {
-      const beatInBar = beatCountRef.current % timeSignature;
-      const isAccent = beatInBar === 0;
+    const currentTempo = tempoRef.current;
+    const currentTimeSignature = timeSignatureRef.current;
+    const secondsPerBeat = 60.0 / currentTempo;
+    const preRollTotal = currentTimeSignature * DEFAULT_CONFIG.preRollBars;
+    
+    // Get current time
+    const now = ctx.currentTime;
+    
+    // Play current beat
+    if (isPreRollRef.current) {
+      // Pre-roll mode
+      const isAccent = (preRollCountRef.current % currentTimeSignature) === 0;
+      playHiHat(ctx, isAccent, true);
       
-      if (isPreRoll) {
-        // Pre-roll mode
-        playHiHat(isAccent, true);
-        preRollCountRef.current++;
-        setPreRollBeat(preRollCountRef.current);
+      preRollCountRef.current++;
+      const remaining = preRollTotal - preRollCountRef.current;
+      setPreRollBeat(remaining);
+      
+      // Check if pre-roll complete
+      if (preRollCountRef.current >= preRollTotal) {
+        isPreRollRef.current = false;
+        setIsPreRoll(false);
+        beatCountRef.current = 0;
         
-        // Check if pre-roll complete
-        if (preRollCountRef.current >= timeSignature * DEFAULT_CONFIG.preRollBars) {
-          setIsPreRoll(false);
-          preRollCountRef.current = 0;
-          beatCountRef.current = 0;
-          onPreRollComplete?.();
-        }
-      } else {
-        // Normal metronome
-        playHiHat(isAccent, false);
-        setCurrentBeat(beatInBar + 1);
+        // Call callback after a small delay to let UI update
+        setTimeout(() => {
+          onPreRollCompleteRef.current?.();
+        }, 50);
       }
-      
+    } else {
+      // Normal metronome
+      const beatInBar = beatCountRef.current % currentTimeSignature;
+      const isAccent = beatInBar === 0;
+      playHiHat(ctx, isAccent, false);
+      setCurrentBeat(beatInBar + 1);
       beatCountRef.current++;
-      nextBeatTimeRef.current += secondsPerBeat;
     }
     
-    // Schedule next check
-    timerIdRef.current = setTimeout(scheduleNextBeat, 25);
-  }, [tempo, timeSignature, playHiHat, isPreRoll, onPreRollComplete, getAudioContext]);
+    // Schedule next beat
+    if (isPlayingRef.current) {
+      timerIdRef.current = setTimeout(() => {
+        scheduleNextBeat(ctx);
+      }, secondsPerBeat * 1000);
+    }
+  }, [playHiHat]);
   
   // ============================================
   // CONTROLS
   // ============================================
   
-  /**
-   * Start metronome with optional pre-roll
-   * @param {boolean} withPreRoll - Start with pre-roll countdown
-   */
-  const start = useCallback((withPreRoll = true) => {
-    const ctx = getAudioContext();
-    
-    // Resume if suspended
-    if (ctx.state === 'suspended') {
-      ctx.resume();
-    }
-    
-    beatCountRef.current = 0;
-    preRollCountRef.current = 0;
-    nextBeatTimeRef.current = ctx.currentTime + 0.05;
-    
-    if (withPreRoll) {
-      setIsPreRoll(true);
-      setPreRollBeat(0);
-    } else {
-      setIsPreRoll(false);
-    }
-    
-    setIsPlaying(true);
-    setCurrentBeat(0);
-    
-    scheduleNextBeat();
-  }, [getAudioContext, scheduleNextBeat]);
-  
-  /**
-   * Stop metronome
-   */
-  const stop = useCallback(() => {
+  const start = useCallback(async (withPreRoll = true) => {
+    // Stop any existing playback first
     if (timerIdRef.current) {
       clearTimeout(timerIdRef.current);
       timerIdRef.current = null;
     }
     
+    const ctx = await getAudioContext();
+    
+    // Reset state
+    beatCountRef.current = 0;
+    preRollCountRef.current = 0;
+    
+    if (withPreRoll) {
+      isPreRollRef.current = true;
+      setIsPreRoll(true);
+      setPreRollBeat(timeSignatureRef.current);
+    } else {
+      isPreRollRef.current = false;
+      setIsPreRoll(false);
+    }
+    
+    isPlayingRef.current = true;
+    setIsPlaying(true);
+    setCurrentBeat(0);
+    
+    // Start scheduling
+    scheduleNextBeat(ctx);
+  }, [getAudioContext, scheduleNextBeat]);
+  
+  const stop = useCallback(() => {
+    // Clear timer
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
+    }
+    
+    // Reset all state
+    isPlayingRef.current = false;
+    isPreRollRef.current = false;
     setIsPlaying(false);
     setIsPreRoll(false);
     setCurrentBeat(0);
@@ -210,28 +225,31 @@ export function useRecordingMetronome({
     preRollCountRef.current = 0;
   }, []);
   
-  /**
-   * Start metronome for playback (sync with audio position)
-   * @param {number} startTime - Audio position in seconds
-   */
-  const startForPlayback = useCallback((startTime = 0) => {
-    const ctx = getAudioContext();
-    
-    if (ctx.state === 'suspended') {
-      ctx.resume();
+  const startForPlayback = useCallback(async (startTime = 0) => {
+    if (timerIdRef.current) {
+      clearTimeout(timerIdRef.current);
+      timerIdRef.current = null;
     }
     
-    const secondsPerBeat = 60.0 / tempo;
-    // Calculate which beat we should be on
-    beatCountRef.current = Math.floor(startTime / secondsPerBeat);
-    nextBeatTimeRef.current = ctx.currentTime + (secondsPerBeat - (startTime % secondsPerBeat));
+    const ctx = await getAudioContext();
     
+    const secondsPerBeat = 60.0 / tempoRef.current;
+    beatCountRef.current = Math.floor(startTime / secondsPerBeat);
+    
+    isPlayingRef.current = true;
+    isPreRollRef.current = false;
     setIsPlaying(true);
     setIsPreRoll(false);
-    setCurrentBeat((beatCountRef.current % timeSignature) + 1);
+    setCurrentBeat((beatCountRef.current % timeSignatureRef.current) + 1);
     
-    scheduleNextBeat();
-  }, [getAudioContext, tempo, timeSignature, scheduleNextBeat]);
+    // Calculate delay to next beat
+    const beatOffset = startTime % secondsPerBeat;
+    const delayToNextBeat = (secondsPerBeat - beatOffset) * 1000;
+    
+    timerIdRef.current = setTimeout(() => {
+      scheduleNextBeat(ctx);
+    }, delayToNextBeat);
+  }, [getAudioContext, scheduleNextBeat]);
   
   // ============================================
   // CLEANUP
@@ -248,7 +266,7 @@ export function useRecordingMetronome({
     };
   }, []);
   
-  // Update tempo effect
+  // Sync initial tempo
   useEffect(() => {
     setTempo(initialTempo);
   }, [initialTempo]);
@@ -275,9 +293,6 @@ export function useRecordingMetronome({
     start,
     stop,
     startForPlayback,
-    
-    // Utilities
-    playClick: playHiHat,
   };
 }
 

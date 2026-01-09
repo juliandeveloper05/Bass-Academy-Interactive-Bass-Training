@@ -189,8 +189,8 @@ const MetronomeControls = ({
             {isPreRoll ? (
               // Pre-roll countdown
               <div className="flex items-center gap-3">
-                <span className="text-2xl font-bold text-[#C9A554] animate-pulse">
-                  {preRollTotal - preRollBeat + 1}
+                <span className="text-3xl font-bold text-[#C9A554] animate-pulse">
+                  {preRollBeat || timeSignature}
                 </span>
                 <span className="text-sm text-white/50">Get ready...</span>
               </div>
