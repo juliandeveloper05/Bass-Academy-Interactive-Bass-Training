@@ -1,5 +1,5 @@
 import React from "react";
-import { Music, Sparkles, TrendingUp, Zap, Edit3 } from "lucide-react";
+import { Sparkles, TrendingUp, Zap, Edit3 } from "lucide-react";
 
 /**
  * Artist data for HomeScreen
@@ -320,16 +320,16 @@ function HomeScreen({ onSelectArtist, onSelectCustomBuilder }) {
         <header className="landscape-compact-header text-center mb-8 sm:mb-12 lg:mb-16 relative px-4 max-w-5xl mx-auto">
           {/* Logo */}
           <div
-            className="landscape-compact-logo inline-flex items-center justify-center p-4 sm:p-5 rounded-3xl 
-                        mb-5 sm:mb-7 lg:mb-8 shadow-2xl animate-[float_3s_ease-in-out_infinite]"
+            className="landscape-compact-logo inline-flex items-center justify-center rounded-3xl 
+                        mb-5 sm:mb-7 lg:mb-8 shadow-2xl animate-[float_3s_ease-in-out_infinite] overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, #C9A554 0%, #E0C285 100%)",
               boxShadow: "0 20px 60px rgba(201, 165, 84, 0.3)",
             }}
           >
-            <Music
-              className="text-[#0D1B2A] w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14"
-              strokeWidth={2.5}
+            <img
+              src="/logo.png"
+              alt="Bass Academy Logo"
+              className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-cover"
             />
           </div>
 
