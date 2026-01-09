@@ -586,3 +586,121 @@
 [data-theme="practice"] .home-screen-bg .fixed.rounded-full {
   opacity: 0.03;
 }
+
+/* ============================================
+   CUSTOM BUILDER CARD - THEME SUPPORT
+   ============================================ */
+
+/* Default/Dark Theme */
+.custom-builder-card {
+  background: linear-gradient(135deg, rgba(201, 165, 84, 0.15) 0%, rgba(201, 165, 84, 0.05) 100%);
+  border: 2px solid rgba(201, 165, 84, 0.3);
+  box-shadow: 0 10px 40px -10px rgba(201, 165, 84, 0.2);
+}
+
+.custom-builder-shine {
+  background: linear-gradient(45deg, transparent 30%, rgba(201, 165, 84, 0.1) 50%, transparent 70%);
+  background-size: 200% 200%;
+}
+
+.custom-builder-icon {
+  background: linear-gradient(135deg, #C9A554 0%, #E0C285 100%);
+  box-shadow: 0 10px 15px -3px rgba(201, 165, 84, 0.3);
+}
+
+.custom-builder-icon-color {
+  color: #0D1B2A;
+}
+
+.custom-builder-title {
+  color: var(--color-cream);
+}
+
+.custom-builder-badge {
+  background: #C9A554;
+  color: #0D1B2A;
+}
+
+.custom-builder-desc {
+  color: #778DA9;
+}
+
+.custom-builder-arrow {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-builder-card:hover .custom-builder-arrow {
+  background: #C9A554;
+}
+
+.custom-builder-zap {
+  color: #C9A554;
+}
+
+.custom-builder-card:hover .custom-builder-zap {
+  color: #0D1B2A;
+}
+
+/* Light Theme - Custom Builder */
+[data-theme="light"] .custom-builder-card {
+  background: linear-gradient(135deg, rgba(201, 165, 84, 0.2) 0%, rgba(201, 165, 84, 0.1) 100%);
+  border: 2px solid rgba(201, 165, 84, 0.4);
+  box-shadow: 0 10px 40px -10px rgba(201, 165, 84, 0.3);
+}
+
+[data-theme="light"] .custom-builder-title {
+  color: #1B263B;
+}
+
+[data-theme="light"] .custom-builder-desc {
+  color: #415A77;
+}
+
+[data-theme="light"] .custom-builder-arrow {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .custom-builder-card:hover .custom-builder-arrow {
+  background: #C9A554;
+}
+
+/* Practice Theme - Custom Builder */
+[data-theme="practice"] .custom-builder-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 30px -10px rgba(255, 215, 0, 0.3);
+}
+
+[data-theme="practice"] .custom-builder-icon {
+  background: linear-gradient(135deg, #FFD700 0%, #FFE44D 100%);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+[data-theme="practice"] .custom-builder-title {
+  color: #FFFFFF;
+}
+
+[data-theme="practice"] .custom-builder-desc {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="practice"] .custom-builder-badge {
+  background: #FFD700;
+  color: #000000;
+}
+
+[data-theme="practice"] .custom-builder-arrow {
+  background: rgba(255, 215, 0, 0.15);
+}
+
+[data-theme="practice"] .custom-builder-card:hover .custom-builder-arrow {
+  background: #FFD700;
+}
+
+[data-theme="practice"] .custom-builder-zap {
+  color: #FFD700;
+}
+
+[data-theme="practice"] .custom-builder-card:hover .custom-builder-zap {
+  color: #000000;
+}

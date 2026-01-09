@@ -277,53 +277,44 @@ function HomeScreen({ onSelectArtist, onSelectCustomBuilder }) {
         <div className="max-w-5xl w-full mb-8 sm:mb-10 px-4 sm:px-6 relative z-10">
           <button
             onClick={onSelectCustomBuilder}
-            className="group w-full relative overflow-hidden rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-8
+            className="custom-builder-card group w-full relative overflow-hidden rounded-2xl lg:rounded-3xl p-5 sm:p-6 lg:p-8
                      text-left transition-all duration-500 transform hover:scale-[1.02] active:scale-95
                      focus:outline-none focus:ring-4 focus:ring-[#C9A554]/30"
-            style={{
-              background: 'linear-gradient(135deg, rgba(201, 165, 84, 0.15) 0%, rgba(201, 165, 84, 0.05) 100%)',
-              border: '2px solid rgba(201, 165, 84, 0.3)',
-              boxShadow: '0 10px 40px -10px rgba(201, 165, 84, 0.2)',
-            }}
           >
             {/* Shine effect */}
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-              style={{
-                background: 'linear-gradient(45deg, transparent 30%, rgba(201, 165, 84, 0.1) 50%, transparent 70%)',
-                backgroundSize: '200% 200%',
-              }}
+              className="custom-builder-shine absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
             />
 
             <div className="relative flex items-center gap-4 sm:gap-6">
               {/* Icon */}
-              <div className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-2xl
-                            bg-gradient-to-br from-[#C9A554] to-[#E0C285] flex items-center justify-center
-                            shadow-lg shadow-[#C9A554]/30 group-hover:scale-110 transition-transform duration-500">
-                <Edit3 className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-[#0D1B2A]" />
+              <div className="custom-builder-icon flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-2xl
+                            flex items-center justify-center
+                            group-hover:scale-110 transition-transform duration-500">
+                <Edit3 className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 custom-builder-icon-color" />
               </div>
               
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white font-['Playfair_Display']
+                  <h3 className="custom-builder-title text-xl sm:text-2xl lg:text-3xl font-bold font-['Playfair_Display']
                                group-hover:text-[#C9A554] transition-colors">
                     Custom Builder
                   </h3>
-                  <span className="px-2 py-0.5 bg-[#C9A554] text-[#0D1B2A] text-xs font-bold rounded-full
+                  <span className="custom-builder-badge px-2 py-0.5 text-xs font-bold rounded-full
                                  uppercase tracking-wide">
                     New
                   </span>
                 </div>
-                <p className="text-[#778DA9] text-sm sm:text-base">
+                <p className="custom-builder-desc text-sm sm:text-base">
                   Crea tus propios ejercicios de bajo nota por nota
                 </p>
               </div>
               
               {/* Arrow */}
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center
-                            group-hover:bg-[#C9A554] group-hover:translate-x-1 transition-all duration-300">
-                <Zap className="w-5 h-5 text-[#C9A554] group-hover:text-[#0D1B2A]" />
+              <div className="custom-builder-arrow flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center
+                            group-hover:translate-x-1 transition-all duration-300">
+                <Zap className="w-5 h-5 custom-builder-zap" />
               </div>
             </div>
           </button>
