@@ -198,11 +198,7 @@ function ArtistCard({ artist, onClick, index }) {
 function HomeScreen({ onSelectArtist, onSelectCustomBuilder }) {
   return (
     <div
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(135deg, #0D1B2A 0%, #1B263B 50%, #0a1628 100%)",
-      }}
+      className="home-screen-bg min-h-screen relative overflow-hidden"
     >
 
 
@@ -244,42 +240,32 @@ function HomeScreen({ onSelectArtist, onSelectCustomBuilder }) {
 
           {/* Main Title */}
           <h1
-            className="landscape-compact-title font-['Playfair_Display'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl 
-                       font-bold text-white mb-3 sm:mb-4 tracking-tight leading-none
+            className="landscape-compact-title home-title font-['Playfair_Display'] text-5xl sm:text-6xl md:text-7xl lg:text-8xl 
+                       font-bold mb-3 sm:mb-4 tracking-tight leading-none
                        drop-shadow-2xl animate-[fadeIn_1s_ease-out]"
           >
-            Bass
-            <span
-              style={{
-                background:
-                  "linear-gradient(135deg, #C9A554 0%, #E0C285 50%, #C9A554 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Academy
-            </span>
+            <span className="home-title-bass">Bass</span>
+            <span className="home-title-academy">Academy</span>
           </h1>
 
           {/* Subtitle */}
           <div
-            className="landscape-compact-subtitle flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 
-                        text-base sm:text-lg lg:text-xl text-white/80 font-light tracking-[0.2em] 
+            className="landscape-compact-subtitle home-subtitle flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 
+                        text-base sm:text-lg lg:text-xl font-light tracking-[0.2em] 
                         uppercase mb-2 drop-shadow-lg"
           >
-            <span className="font-semibold text-white/90">
+            <span className="font-semibold home-subtitle-text">
               Master the Legends
             </span>
-            <span className="hidden sm:inline text-white/40">•</span>
-            <span className="font-bold" style={{ color: "#C9A554" }}>
+            <span className="hidden sm:inline home-subtitle-dot">•</span>
+            <span className="font-bold home-subtitle-year">
               2026
             </span>
           </div>
 
           {/* Description */}
           <p
-            className="landscape-compact-description text-white/60 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed
+            className="landscape-compact-description home-description text-sm sm:text-base max-w-2xl mx-auto leading-relaxed
                       font-['Inter'] drop-shadow-md"
           >
             Aprende técnicas de los mejores bajistas del mundo con ejercicios

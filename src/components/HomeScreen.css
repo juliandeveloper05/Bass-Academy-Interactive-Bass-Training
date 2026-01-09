@@ -472,3 +472,117 @@
     display: none;
   }
 }
+
+/* ============================================
+   THEME SUPPORT FOR HOME SCREEN
+   Dark, Light, and Practice themes
+   ============================================ */
+
+/* Default/Dark Theme */
+.home-screen-bg {
+  background: linear-gradient(135deg, var(--color-primary-deep) 0%, var(--color-primary-dark) 50%, #0a1628 100%);
+}
+
+.home-title-bass {
+  color: var(--color-cream);
+}
+
+.home-title-academy {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 50%, var(--color-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-subtitle-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.home-subtitle-dot {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.home-subtitle-year {
+  color: var(--color-gold);
+}
+
+.home-description {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Light Theme */
+[data-theme="light"] .home-screen-bg {
+  background: linear-gradient(135deg, #F8F5F0 0%, #E8E4DE 50%, #DCD8D0 100%);
+}
+
+[data-theme="light"] .home-title-bass {
+  color: var(--color-cream);
+}
+
+[data-theme="light"] .home-title-academy {
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 50%, var(--color-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="light"] .home-subtitle-text {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="light"] .home-subtitle-dot {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .home-subtitle-year {
+  color: var(--color-gold);
+}
+
+[data-theme="light"] .home-description {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Light theme - Radial gradients */
+[data-theme="light"] .home-screen-bg .fixed.rounded-full {
+  opacity: 0.08;
+}
+
+/* Practice Theme (High Contrast Night Mode) */
+[data-theme="practice"] .home-screen-bg {
+  background: #000000;
+}
+
+[data-theme="practice"] .home-title-bass {
+  color: #FFFFFF;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="practice"] .home-title-academy {
+  background: linear-gradient(135deg, #FFD700 0%, #FFE44D 50%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+[data-theme="practice"] .home-subtitle-text {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="practice"] .home-subtitle-dot {
+  color: rgba(255, 215, 0, 0.5);
+}
+
+[data-theme="practice"] .home-subtitle-year {
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+[data-theme="practice"] .home-description {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Practice theme - Hide or reduce decorative elements */
+[data-theme="practice"] .home-screen-bg .fixed.rounded-full {
+  opacity: 0.03;
+}
