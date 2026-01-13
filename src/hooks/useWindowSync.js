@@ -13,6 +13,7 @@ export const SYNC_MESSAGE_TYPES = {
   PONG: 'TRAINER_PONG',
   HANDSHAKE: 'TRAINER_HANDSHAKE',
   DISCONNECT: 'TRAINER_DISCONNECT',
+  PLAYHEAD_PROGRESS: 'TRAINER_PLAYHEAD_PROGRESS',
 };
 
 // Command types
@@ -34,12 +35,14 @@ const getOrigin = () => window.location.origin;
  * @param {Function} options.onStateReceived - Callback when state update received
  * @param {Function} options.onCommandReceived - Callback when command received
  * @param {Function} options.onConnectionChange - Callback when connection status changes
+ * @param {Function} options.onPlayheadProgress - Callback when playhead progress received (0-1)
  */
 export function useWindowSync({ 
   isPopout = false, 
   onStateReceived, 
   onCommandReceived,
   onConnectionChange,
+  onPlayheadProgress,
 }) {
   const [isConnected, setIsConnected] = useState(false);
   const isConnectedRef = useRef(false); // Track internally to avoid stale closures
@@ -50,13 +53,15 @@ export function useWindowSync({
   const onStateReceivedRef = useRef(onStateReceived);
   const onCommandReceivedRef = useRef(onCommandReceived);
   const onConnectionChangeRef = useRef(onConnectionChange);
+  const onPlayheadProgressRef = useRef(onPlayheadProgress);
   
   // Update refs when callbacks change
   useEffect(() => {
     onStateReceivedRef.current = onStateReceived;
     onCommandReceivedRef.current = onCommandReceived;
     onConnectionChangeRef.current = onConnectionChange;
-  }, [onStateReceived, onCommandReceived, onConnectionChange]);
+    onPlayheadProgressRef.current = onPlayheadProgress;
+  }, [onStateReceived, onCommandReceived, onConnectionChange, onPlayheadProgress]);
 
   // Set partner window reference
   const setPartnerWindow = useCallback((win) => {
@@ -97,6 +102,11 @@ export function useWindowSync({
   const sendHandshake = useCallback(() => {
     return sendMessage(SYNC_MESSAGE_TYPES.HANDSHAKE, { isPopout });
   }, [sendMessage, isPopout]);
+
+  // Send playhead progress (0-1 value) for loop mode sync
+  const sendPlayheadProgress = useCallback((progress) => {
+    return sendMessage(SYNC_MESSAGE_TYPES.PLAYHEAD_PROGRESS, { progress });
+  }, [sendMessage]);
 
   // Handle incoming messages - single stable effect
   useEffect(() => {
@@ -161,6 +171,11 @@ export function useWindowSync({
           onConnectionChangeRef.current?.(false);
           break;
 
+        case SYNC_MESSAGE_TYPES.PLAYHEAD_PROGRESS:
+          // Receive playhead progress from main window (popout only)
+          onPlayheadProgressRef.current?.(payload.progress);
+          break;
+
         default:
           break;
       }
@@ -212,6 +227,7 @@ export function useWindowSync({
     sendState,
     sendCommand,
     sendHandshake,
+    sendPlayheadProgress,
     setPartnerWindow,
     isConnected,
   };

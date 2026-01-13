@@ -1,6 +1,6 @@
 /**
  * LoopControls Component - Loop Mode
- * Controls for loop length, subdivision, and visual settings
+ * Controls for loop length, subdivision, swing, and visual settings
  */
 
 import React from 'react';
@@ -12,6 +12,8 @@ import { LOOP_MODE_CONFIG } from '../../config/uiConfig.js';
  * @param {Function} props.onLoopLengthChange - Callback when loop length changes
  * @param {string} props.subdivision - Current subdivision
  * @param {Function} props.onSubdivisionChange - Callback when subdivision changes
+ * @param {boolean} props.swingEnabled - Whether swing is enabled
+ * @param {Function} props.onSwingToggle - Callback when swing is toggled
  * @param {boolean} props.disabled - Whether controls are disabled during playback
  */
 export default function LoopControls({
@@ -19,6 +21,8 @@ export default function LoopControls({
   onLoopLengthChange,
   subdivision = 'eighth',
   onSubdivisionChange,
+  swingEnabled = false,
+  onSwingToggle,
   disabled = false,
 }) {
   const loopOptions = [1, 2, 4];
@@ -88,6 +92,29 @@ export default function LoopControls({
           ))}
         </div>
       </div>
+
+      {/* Swing Toggle */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onSwingToggle?.(!swingEnabled)}
+          disabled={disabled}
+          className={`
+            flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium
+            transition-all duration-150
+            ${swingEnabled
+              ? 'bg-[var(--color-gold)] text-[var(--color-primary-deep)]'
+              : 'bg-[var(--color-primary-dark)] text-[var(--color-primary-light)] hover:bg-[var(--color-primary-medium)]'
+            }
+            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          `}
+          aria-label={`Swing: ${swingEnabled ? 'activado' : 'desactivado'}`}
+          title={swingEnabled ? 'Swing activado' : 'Swing desactivado'}
+        >
+          <span className="text-base">🔀</span>
+          <span>Swing</span>
+        </button>
+      </div>
     </div>
   );
 }
+

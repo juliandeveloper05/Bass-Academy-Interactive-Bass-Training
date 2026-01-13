@@ -830,6 +830,47 @@ body {
   }
 }
 
+/* Loop Note Sustain Animation - pulsing glow while active */
+@keyframes loop-note-sustain {
+  0%, 100% { 
+    box-shadow: 0 0 12px var(--color-gold), 0 0 24px var(--color-gold);
+    transform: scale(1.05);
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--color-gold), 0 0 40px var(--color-gold);
+    transform: scale(1.1);
+  }
+}
+
+.animate-loop-sustain {
+  animation: loop-note-sustain 400ms ease-in-out infinite;
+}
+
+/* Loop Note Fade Animation - smooth fade when note passes */
+@keyframes loop-note-fade {
+  0% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+}
+
+.animate-loop-fade {
+  animation: loop-note-fade 200ms ease-out forwards;
+}
+
+/* Swing visualization - offset notes for swing feel */
+.loop-note-swing {
+  --swing-offset: 15%;
+}
+
+.loop-note-swing:nth-child(even) {
+  transform: translateX(var(--swing-offset));
+}
+
 /* ============================================
    LOOP MODE EXTENDED STYLES
    CSS Variables, Animations & Accessibility
@@ -929,7 +970,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .loop-beat-active,
   .loop-restart-overlay,
-  .loop-tick-active {
+  .loop-tick-active,
+  .animate-loop-sustain,
+  .animate-loop-fade,
+  .animate-loop-attack {
     animation: none !important;
   }
   
@@ -951,6 +995,9 @@ body {
 
 [data-power-saving="true"] .loop-beat-active,
 [data-power-saving="true"] .loop-restart-overlay,
-[data-power-saving="true"] .loop-tick-active {
+[data-power-saving="true"] .loop-tick-active,
+[data-power-saving="true"] .animate-loop-sustain,
+[data-power-saving="true"] .animate-loop-fade,
+[data-power-saving="true"] .animate-loop-attack {
   animation: none !important;
 }

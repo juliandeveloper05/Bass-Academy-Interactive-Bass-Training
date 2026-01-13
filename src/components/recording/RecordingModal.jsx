@@ -47,6 +47,7 @@ const ListIcon = ({ className = "w-5 h-5" }) => (
  * @param {Object} props.recordingHook - Result of useMediaRecorder hook
  * @param {Object} props.storageHook - Result of useRecordingStorage hook
  * @param {Object} props.exerciseContext - Current exercise info
+ * @param {Object} props.loopModeContext - Loop mode state { isLoopMode, loopLength, subdivision }
  * @param {string} props.initialTab - Initial tab: 'record' | 'library'
  */
 const RecordingModal = ({
@@ -55,6 +56,7 @@ const RecordingModal = ({
   recordingHook = {},
   storageHook = {},
   exerciseContext = {},
+  loopModeContext = {},
   initialTab = 'record',
 }) => {
   const [activeTab, setActiveTab] = React.useState(initialTab);
@@ -284,6 +286,10 @@ const RecordingModal = ({
         isCustom: exerciseContext.isCustom || false,
         customName: editableMetadata.name,
         notes: editableMetadata.notes,
+        // Loop mode metadata
+        loopMode: loopModeContext.isLoopMode || false,
+        loopLength: loopModeContext.loopLength || null,
+        subdivision: loopModeContext.subdivision || null,
       });
 
       reset();
@@ -291,7 +297,7 @@ const RecordingModal = ({
     } catch (err) {
       console.error('Failed to save recording:', err);
     }
-  }, [audioBlob, recordingDuration, editableMetadata, exerciseContext, saveRecording, reset, computeWaveformData]);
+  }, [audioBlob, recordingDuration, editableMetadata, exerciseContext, loopModeContext, saveRecording, reset, computeWaveformData]);
 
   // ============================================
   // RATING HANDLER
@@ -433,7 +439,14 @@ const RecordingModal = ({
 
               {/* Editable Recording Context */}
               <div className="mt-6 p-4 bg-white/5 rounded-xl">
-                <h3 className="text-sm font-medium text-white/70 mb-3">📝 Recording Details</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-white/70">📝 Recording Details</h3>
+                  {loopModeContext.isLoopMode && (
+                    <span className="flex items-center gap-1 px-2 py-0.5 bg-[var(--color-gold)]/20 text-[var(--color-gold)] text-xs rounded-full">
+                      🔁 Loop Mode
+                    </span>
+                  )}
+                </div>
                 
                 {/* Name Field */}
                 <div className="mb-3">
