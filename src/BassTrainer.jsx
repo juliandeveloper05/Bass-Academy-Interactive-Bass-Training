@@ -72,13 +72,13 @@ import RecordingModal from "./components/recording/RecordingModal.jsx";
 import { useMediaRecorder } from "./features/recording/hooks/useMediaRecorder.js";
 import { useRecordingStorage } from "./features/recording/hooks/useRecordingStorage.js";
 
-// Vision Feature (lazy loaded)
-import { VisionStudio } from "./features/vision/index.js";
+// Vision Feature
+import { VisionStudioContent, VisionProvider, useVisionContext } from "./features/vision/index.js";
 import { visionBridge } from "./services/VisionAudioBridge.js";
 
 const EXERCISE_STORAGE_KEY = 'bass-trainer-exercise-state';
 
-const BassTrainer = ({ selectedCategory, customExerciseConfig, onBack }) => {
+const BassTrainerContent = ({ selectedCategory, customExerciseConfig, onBack }) => {
   // PWA Hook
   const {
     isInstallable,
@@ -111,8 +111,13 @@ const BassTrainer = ({ selectedCategory, customExerciseConfig, onBack }) => {
   const { openPopout, closePopout, isPopoutOpen, popoutWindow } = usePopoutWindow();
   const [isLatencyModalOpen, setIsLatencyModalOpen] = useState(false);
   
-  // Vision Control State (feature-flagged)
-  const [isVisionOpen, setIsVisionOpen] = useState(false);
+  // Vision Control State (from context when enabled)
+  // Access context only if VISION_ENABLED (prevents error when provider not present)
+  const visionContext = FEATURES.VISION_ENABLED ? useVisionContext() : null;
+  const isVisionOpen = visionContext?.state?.visionUIOpen ?? false;
+  const isVisionActive = visionContext?.state?.visionEnabled ?? false;
+  const openVisionUI = () => visionContext?.actions?.openVisionUI?.();
+  const closeVisionUI = () => visionContext?.actions?.closeVisionUI?.();
   
   // Recording Hooks
   const [isRecordingModalOpen, setIsRecordingModalOpen] = useState(false);
@@ -486,17 +491,25 @@ const BassTrainer = ({ selectedCategory, customExerciseConfig, onBack }) => {
             {/* Vision Control Button (feature-flagged) */}
             {FEATURES.VISION_ENABLED && (
               <button 
-                onClick={() => setIsVisionOpen(true)}
+                onClick={openVisionUI}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full glass border transition-all ${
-                  isVisionOpen 
-                    ? 'border-cyan-400 text-cyan-400 bg-cyan-400/10' 
-                    : 'border-[var(--color-primary-medium)] text-[var(--color-primary-light)] hover:text-cyan-400 hover:border-cyan-400'
+                  isVisionActive 
+                    ? 'border-green-400 text-green-400 bg-green-400/10' 
+                    : isVisionOpen 
+                      ? 'border-cyan-400 text-cyan-400 bg-cyan-400/10' 
+                      : 'border-[var(--color-primary-medium)] text-[var(--color-primary-light)] hover:text-cyan-400 hover:border-cyan-400'
                 }`}
-                aria-label="Activar control por gestos"
-                title="BassAI Vision - Control por gestos"
+                aria-label={isVisionActive ? 'Vision activo - abrir panel' : 'Activar control por gestos'}
+                title={isVisionActive ? 'Vision activo - click para abrir panel' : 'BassAI Vision - Control por gestos'}
               >
-                <span className="text-lg">✋</span>
-                <span className="text-xs font-medium hidden sm:inline">Vision</span>
+                <span className="text-lg">{isVisionActive ? '👁️' : '✋'}</span>
+                <span className="text-xs font-medium hidden sm:inline">
+                  {isVisionActive ? 'Activo' : 'Vision'}
+                </span>
+                {/* Tiny pulse indicator when active but UI closed */}
+                {isVisionActive && !isVisionOpen && (
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                )}
               </button>
             )}
             
@@ -708,14 +721,27 @@ const BassTrainer = ({ selectedCategory, customExerciseConfig, onBack }) => {
       {isVisionOpen && FEATURES.VISION_ENABLED && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="relative w-full max-w-2xl h-[70vh] max-h-[600px] rounded-2xl overflow-hidden shadow-2xl">
-            <VisionStudio
+            <VisionStudioContent
               onGestureCommand={handleVisionGesture}
-              onClose={() => setIsVisionOpen(false)}
+              onClose={closeVisionUI}
             />
           </div>
         </div>
       )}
     </div>
+  );
+};
+
+// Wrap with VisionProvider for global vision state
+const BassTrainer = (props) => {
+  if (!FEATURES.VISION_ENABLED) {
+    return <BassTrainerContent {...props} />;
+  }
+  
+  return (
+    <VisionProvider>
+      <BassTrainerContent {...props} />
+    </VisionProvider>
   );
 };
 

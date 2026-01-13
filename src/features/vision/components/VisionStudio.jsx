@@ -1,6 +1,10 @@
 /**
  * VisionStudio - BassAI Vision
  * Main container component for vision control feature
+ * 
+ * UI/Engine separation:
+ * - ❌ (close) = closeVisionUI() - only hides panel, engine keeps running
+ * - 🔴 Desactivar = disableVision() - stops engine completely
  */
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
@@ -14,11 +18,13 @@ import GestureIndicator from './GestureIndicator.jsx';
 
 function VisionStudioContent({ onGestureCommand, onClose }) {
   const { state, actions } = useVisionContext();
-  const [isEnabled, setIsEnabled] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const canvasRef = useRef(null);
   
-  // Hand tracking
+  // Use visionEnabled from context (engine state)
+  const isEnabled = state.visionEnabled;
+  
+  // Hand tracking - controlled by visionEnabled
   const { videoRef, isReady, error, status, fps, latency } = useHandTracking({
     enabled: isEnabled
   });
@@ -33,9 +39,9 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
     }, [onGestureCommand])
   });
 
-  // Draw canvas overlay
+  // Draw canvas overlay (only if drawingEnabled)
   useEffect(() => {
-    if (!canvasRef.current || !state.landmarks) return;
+    if (!canvasRef.current || !state.landmarks || !state.drawingEnabled) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -68,12 +74,24 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
       });
     }
     
-  }, [state.landmarks, state.handedness, currentGesture, confidence, showDebug, state.showLandmarks, state.fps, state.latency, state.detectionTime, videoRef]);
+  }, [state.landmarks, state.handedness, state.drawingEnabled, currentGesture, confidence, showDebug, state.showLandmarks, state.fps, state.latency, state.detectionTime, videoRef]);
 
-  // Toggle vision
-  const toggleVision = useCallback(() => {
-    setIsEnabled(prev => !prev);
-  }, []);
+  // ACTIVATE vision (starts engine)
+  const handleActivateVision = useCallback(() => {
+    actions.enableVision();
+  }, [actions]);
+
+  // CLOSE UI (❌) - only hides panel, engine keeps running
+  const handleCloseUI = useCallback(() => {
+    actions.closeVisionUI();
+    if (onClose) onClose();
+  }, [actions, onClose]);
+
+  // DISABLE vision (🔴) - stops engine completely
+  const handleDisableVision = useCallback(() => {
+    actions.disableVision();
+    if (onClose) onClose();
+  }, [actions, onClose]);
 
   return (
     <div className="relative w-full h-full min-h-[300px] bg-gray-900 rounded-lg overflow-hidden">
@@ -112,16 +130,14 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
       
       {/* Top controls */}
       <div className="absolute top-4 right-4 z-20 flex gap-2">
-        {/* Close button */}
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="p-2 bg-gray-800/90 hover:bg-red-600/80 rounded-lg transition-all"
-            title="Cerrar Vision"
-          >
-            <X className="w-5 h-5 text-white" />
-          </button>
-        )}
+        {/* Close button - ONLY CLOSES UI, doesn't stop engine */}
+        <button
+          onClick={handleCloseUI}
+          className="p-2 bg-gray-800/90 hover:bg-gray-700 rounded-lg transition-all"
+          title="Cerrar panel (Vision sigue activo)"
+        >
+          <X className="w-5 h-5 text-white" />
+        </button>
         
         {/* Debug toggle */}
         <button
@@ -146,11 +162,11 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
         </button>
       </div>
       
-      {/* Main toggle button - center */}
+      {/* Main toggle button - center (when engine not active) */}
       {!isEnabled && (
         <div className="absolute inset-0 flex items-center justify-center z-15">
           <button
-            onClick={toggleVision}
+            onClick={handleActivateVision}
             className="flex flex-col items-center gap-3 p-8 bg-gray-800/80 hover:bg-cyan-600/80 rounded-2xl transition-all backdrop-blur-sm"
           >
             <Camera className="w-12 h-12 text-white" />
@@ -178,12 +194,13 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
         </div>
       )}
       
-      {/* Deactivate button when active */}
+      {/* DISABLE button (red) - stops engine completely */}
       {isEnabled && (
         <div className="absolute bottom-4 right-4 z-20">
           <button
-            onClick={toggleVision}
+            onClick={handleDisableVision}
             className="flex items-center gap-2 px-4 py-2 bg-red-500/80 hover:bg-red-600 rounded-lg transition-all"
+            title="Desactivar Vision (apaga cámara)"
           >
             <CameraOff className="w-4 h-4 text-white" />
             <span className="text-white text-sm">Desactivar</span>
@@ -218,8 +235,10 @@ function VisionStudioContent({ onGestureCommand, onClose }) {
     </div>
   );
 }
+// Export inner component for parent-controlled provider
+export { VisionStudioContent };
 
-// Wrapped with provider
+// Wrapped with its own provider (standalone usage)
 export default function VisionStudio(props) {
   return (
     <VisionProvider>

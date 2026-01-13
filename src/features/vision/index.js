@@ -3,7 +3,7 @@
  */
 
 // Components
-export { default as VisionStudio } from './components/VisionStudio.jsx';
+export { default as VisionStudio, VisionStudioContent } from './components/VisionStudio.jsx';
 export { default as GestureIndicator } from './components/GestureIndicator.jsx';
 
 // Hooks
